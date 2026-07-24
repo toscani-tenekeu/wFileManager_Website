@@ -48,8 +48,8 @@ function AboutPage() {
                 description="Privileged operations are protected by application roles, current-password verification, guarded archive handling and hardened filesystem rules."
               />
               <AboutCard
-                title="Flexible deployment"
-                description="Run with a local SQLite database for long-term control or use KmerHosting managed Supabase for faster evaluation and setup."
+                title="Flexible application data"
+                description="Use Community with SQLite on your server, or choose Pro managed application data with automatic backups and recovery tools."
               />
             </div>
 
