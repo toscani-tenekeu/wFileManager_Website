@@ -567,7 +567,6 @@ created_at   : 2026-07-24T09:41:00Z`}
 function CTA() {
   return (
     <section className="relative overflow-hidden border-b border-border">
-      <div className="absolute inset-0 hero-glow" aria-hidden />
       <div className="relative mx-auto max-w-4xl px-4 py-24 text-center">
         <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
           Ready to give your VPS a proper file manager?
