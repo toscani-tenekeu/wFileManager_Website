@@ -212,3 +212,19 @@
     border-color: var(--muted-foreground);
   }
 }
+
+/* Keep marketing sections focused on their actual headings. */
+.text-xs.font-medium.uppercase.tracking-wider.brand-text {
+  display: none;
+}
+
+.text-xs.font-medium.uppercase.tracking-wider.brand-text + h1,
+.text-xs.font-medium.uppercase.tracking-wider.brand-text + h2 {
+  margin-top: 0;
+}
+
+/* Remove internal screenshot placeholder instructions from the public interface. */
+#screenshots h2 + p,
+#screenshots figure .relative.text-center > div:nth-child(n + 2) {
+  display: none;
+}
