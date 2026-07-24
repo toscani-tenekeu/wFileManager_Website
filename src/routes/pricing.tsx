@@ -9,7 +9,7 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "Use the free SQLite-based Community mode or choose Pro managed application data for $50 USD per instance per year.",
+          "Use Community with SQLite on your server at no cost, or choose Pro managed application data for $50 USD per instance per year.",
       },
     ],
   }),
@@ -27,17 +27,17 @@ function PricingPage() {
           <div className="relative mx-auto max-w-6xl px-4 py-24 md:py-32">
             <div className="mx-auto max-w-2xl text-center">
               <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-                Choose how your application data is managed
+                Choose how wFileManager application data is stored
               </h1>
               <p className="mt-5 text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-                Run wFileManager with a local SQLite database at no cost, or use Pro for managed application data, automatic backups and recovery across server reinstalls.
+                Community keeps application records in SQLite on your server. Pro stores those records in managed infrastructure with automatic backups and recovery tools.
               </p>
             </div>
 
             <div className="mx-auto mt-14 grid max-w-4xl gap-6 md:grid-cols-2">
               <article className="card-surface relative flex flex-col overflow-hidden p-8 pt-10">
-                <Ribbon>Self-managed</Ribbon>
-                <h2 className="pr-20 text-xl font-semibold">Community</h2>
+                <Ribbon>SQLite on your server</Ribbon>
+                <h2 className="pr-24 text-xl font-semibold">Community</h2>
 
                 <div className="mt-7 flex items-end gap-2">
                   <span className="text-5xl font-semibold tracking-tight">$0</span>
@@ -46,16 +46,16 @@ function PricingPage() {
                 <p className="mt-2 text-sm font-medium brand-text">Free forever · No paid licence required</p>
 
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  Community runs exclusively with SQLite on your server. You retain full responsibility for the application database, backups, migrations and recovery.
+                  Community stores all wFileManager application records locally in SQLite. You manage the database, backups, restores, migrations and ongoing maintenance.
                 </p>
 
                 <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
                   <Feature>All wFileManager features</Feature>
                   <Feature>SQLite mode only</Feature>
-                  <Feature>Application data stored locally on the VPS</Feature>
+                  <Feature>Application records stored on your server</Feature>
                   <Feature>Self-managed users, roles, sessions and authentication records</Feature>
                   <Feature>Self-managed backups, restores and database maintenance</Feature>
-                  <Feature>No subscription or usage fees</Feature>
+                  <Feature>Community support</Feature>
                 </ul>
 
                 <a
@@ -79,7 +79,7 @@ function PricingPage() {
                 </p>
 
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  Pro keeps wFileManager application records in managed storage with automatic backups and recovery tools designed to preserve continuity when a server is reinstalled or replaced.
+                  Pro manages wFileManager application records separately from your server, with automatic backups and recovery tools for continuity after a server reinstall or replacement.
                 </p>
 
                 <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
@@ -110,9 +110,9 @@ function PricingPage() {
               </div>
 
               <div className="rounded-lg border border-border bg-[var(--surface-1)] p-6">
-                <h2 className="text-sm font-semibold text-foreground">Server files are not included</h2>
+                <h2 className="text-sm font-semibold text-foreground">Files on your server are not included</h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Pro does not store, back up or restore files and data from the server filesystem. wFileManager is a management layer above the server; the files it displays remain on your VPS and require a separate server backup strategy.
+                  Neither plan stores, backs up or restores the files displayed by the file manager. wFileManager is a management layer above your server filesystem, so server files require a separate backup and recovery strategy.
                 </p>
               </div>
             </div>
