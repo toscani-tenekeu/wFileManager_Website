@@ -2,7 +2,15 @@
 
 Official website for [wFileManager](https://github.com/toscani-tenekeu/wFileManager), a secure web file manager for Linux servers.
 
-wFileManager provides real filesystem browsing, file transfers, archive management, per-user trash, application accounts, notifications, verified updates and an administrator-only root terminal.
+wFileManager supports KVM virtual machines, bare-metal servers and LXC containers with systemd and root access.
+
+## Data modes
+
+- **Community:** free forever, SQLite on your server, with self-managed application data and backups.
+- **Pro:** $50 USD per instance per year, with managed application records, automatic backups, recovery tools and 100 MB of storage included.
+- Additional Pro storage costs $1 USD per 100 MB per year.
+
+Managed application data covers wFileManager users, roles, sessions, authentication records, notifications and settings. Files displayed by wFileManager remain on your server and require a separate backup strategy.
 
 ## Development
 
