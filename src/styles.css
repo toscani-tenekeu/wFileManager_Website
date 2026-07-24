@@ -228,30 +228,3 @@
 #screenshots figure .relative.text-center > div:nth-child(n + 2) {
   display: none;
 }
-
-/* Replace the original feature copy without changing the established layout. */
-#features h2,
-#features h2 + p {
-  font-size: 0;
-}
-
-#features h2::after {
-  content: "Manage your server files from one secure interface";
-  display: block;
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-}
-
-#features h2 + p::after {
-  content: "Browse, edit, transfer, archive and administer files directly from the browser.";
-  display: block;
-  font-size: 1rem;
-  line-height: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  #features h2::after {
-    font-size: 2.25rem;
-    line-height: 2.5rem;
-  }
-}
