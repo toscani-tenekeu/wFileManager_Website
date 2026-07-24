@@ -656,11 +656,32 @@ function CodeBlock({ code }: { code: string }) {
 }
 
 function TerminalBlock({ cmd }: { cmd: string }) {
+  const [copied, setCopied] = React.useState(false);
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(cmd);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* noop */
+    }
+  };
   return (
     <div className="card-surface overflow-hidden text-left">
-      <div className="flex items-center gap-2 border-b border-border bg-[var(--surface-2)] px-3 py-2 text-xs text-muted-foreground">
-        <TerminalIcon className="h-3.5 w-3.5 brand-text" />
-        bash
+      <div className="flex items-center justify-between gap-2 border-b border-border bg-[var(--surface-2)] px-3 py-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <TerminalIcon className="h-3.5 w-3.5 brand-text" />
+          bash
+        </div>
+        <button
+          type="button"
+          onClick={onCopy}
+          className="btn-ghost btn-ghost-hover inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium"
+          aria-label="Copy command"
+        >
+          {copied ? <CheckIcon className="h-3 w-3 brand-text" /> : <CopyIcon className="h-3 w-3" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
       </div>
       <pre className="overflow-x-auto px-4 py-4 font-mono text-[12.5px] leading-relaxed">
         <code>
@@ -701,17 +722,155 @@ const S = (p: IP & { d: string; extra?: React.ReactNode }) => (
 function Logo({ className }: IP) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <defs>
-        <linearGradient id="lg" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0" stopColor="oklch(0.86 0.18 158)" />
-          <stop offset="1" stopColor="oklch(0.55 0.14 158)" />
-        </linearGradient>
-      </defs>
-      <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h4l2 2H18.5A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-11Z" fill="url(#lg)" opacity="0.9" />
+      <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h4l2 2H18.5A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-11Z" fill="oklch(0.72 0.17 158)" />
       <path d="M8 13l3 3 5-6" stroke="oklch(0.14 0.02 160)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
     </svg>
   );
 }
+
+/* ---------------- THEME TOGGLE ---------------- */
+function ThemeToggle() {
+  const [theme, setTheme] = React.useState<"light" | "dark">("dark");
+  React.useEffect(() => {
+    const stored = (typeof window !== "undefined" && localStorage.getItem("theme")) as
+      | "light"
+      | "dark"
+      | null;
+    const initial: "light" | "dark" =
+      stored ?? (window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    setTheme(initial);
+    document.documentElement.classList.toggle("dark", initial === "dark");
+  }, []);
+  const toggle = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      /* noop */
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label="Toggle theme"
+      className="btn-ghost btn-ghost-hover inline-flex h-8 w-8 items-center justify-center rounded-md"
+    >
+      {theme === "dark" ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
+    </button>
+  );
+}
+
+/* ---------------- SCREENSHOTS ---------------- */
+const SCREENSHOTS: { title: string; desc: string; ratio: string }[] = [
+  {
+    title: "File explorer",
+    desc: "Real filesystem browsing with multi‑select, copy, move, rename and delete.",
+    ratio: "aspect-[16/10]",
+  },
+  {
+    title: "Root PTY terminal",
+    desc: "Administrator‑only terminal, gated by current‑password verification.",
+    ratio: "aspect-[16/10]",
+  },
+  {
+    title: "Users, roles & sessions",
+    desc: "Application accounts, permissions and live session control.",
+    ratio: "aspect-[16/10]",
+  },
+  {
+    title: "Setup wizard",
+    desc: "Guided installation: domain, database mode, first administrator.",
+    ratio: "aspect-[16/10]",
+  },
+  {
+    title: "Notifications & updates",
+    desc: "Verified releases, health checks and in‑app notifications.",
+    ratio: "aspect-[16/10]",
+  },
+];
+
+function Screenshots() {
+  return (
+    <section id="screenshots" className="border-b border-border">
+      <div className="mx-auto max-w-6xl px-4 py-24">
+        <SectionHeader
+          kicker="Interfaces"
+          title="See wFileManager in action"
+          desc="Drop your screenshots into the placeholders below to illustrate each interface."
+        />
+        <div className="mt-14 grid gap-6 md:grid-cols-2">
+          {SCREENSHOTS.slice(0, 1).map((s, i) => (
+            <ScreenshotSlot key={s.title} index={i + 1} {...s} className="md:col-span-2" />
+          ))}
+          {SCREENSHOTS.slice(1).map((s, i) => (
+            <ScreenshotSlot key={s.title} index={i + 2} {...s} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ScreenshotSlot({
+  index,
+  title,
+  desc,
+  ratio,
+  className = "",
+}: {
+  index: number;
+  title: string;
+  desc: string;
+  ratio: string;
+  className?: string;
+}) {
+  return (
+    <figure className={`card-surface overflow-hidden ${className}`}>
+      <div
+        className={`${ratio} relative flex items-center justify-center border-b border-dashed border-border bg-[var(--surface-2)]`}
+      >
+        <div className="grid-bg absolute inset-0 opacity-60" aria-hidden />
+        <div className="relative text-center">
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-md border border-border bg-background">
+            <ImageIcon className="h-4 w-4 brand-text" />
+          </div>
+          <div className="mt-3 text-xs font-medium text-muted-foreground">
+            Image {index} · drop screenshot here
+          </div>
+          <div className="mt-1 font-mono text-[10px] text-muted-foreground/70">
+            src/assets/screenshots/{index}.png
+          </div>
+        </div>
+      </div>
+      <figcaption className="p-5">
+        <div className="text-sm font-semibold text-foreground">{title}</div>
+        <div className="mt-1 text-sm text-muted-foreground">{desc}</div>
+      </figcaption>
+    </figure>
+  );
+}
+
+const CopyIcon = (p: IP) => (
+  <S {...p} d="M9 9h10v10H9zM5 15V5h10" />
+);
+const SunIcon = (p: IP) => (
+  <S
+    {...p}
+    d="M12 4V2M12 22v-2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+    extra={<circle cx="12" cy="12" r="4" />}
+  />
+);
+const MoonIcon = (p: IP) => <S {...p} d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />;
+const ImageIcon = (p: IP) => (
+  <S
+    {...p}
+    d="M4 5h16v14H4zM4 15l4-4 4 4 3-3 5 5"
+    extra={<circle cx="9" cy="9" r="1.5" />}
+  />
+);
 const FolderIcon = (p: IP) => <S {...p} d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" />;
 const FileIcon = (p: IP) => <S {...p} d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" extra={<path d="M14 3v5h5" />} />;
 const ArchiveIcon = (p: IP) => <S {...p} d="M3 7h18M5 7v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7M10 12h4" extra={<path d="M4 4h16v3H4z" />} />;
