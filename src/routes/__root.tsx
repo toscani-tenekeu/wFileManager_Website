@@ -269,28 +269,17 @@ function SiteFooter() {
   return (
     <footer className="bg-background text-foreground">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm text-muted-foreground md:flex-row">
-        <div className="flex items-center gap-2">
-          <Logo className="h-5 w-5" />
-          <span>
-            <span className="text-foreground">wFileManager</span> · A project by KmerHosting LLC
-          </span>
-        </div>
-        <div className="flex items-center gap-6">
+        <span>
+          <span className="text-foreground">wFileManager</span> · Developed by KmerHosting LLC
+        </span>
+        <div className="flex flex-wrap items-center justify-center gap-6">
           <a href={GITHUB} target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
+          <a href={`${GITHUB}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noreferrer" className="hover:text-foreground">Contribute</a>
           <a href={`${GITHUB}/blob/main/SECURITY.md`} target="_blank" rel="noreferrer" className="hover:text-foreground">Security</a>
           <a href={`${GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className="hover:text-foreground">MIT License</a>
         </div>
       </div>
     </footer>
-  );
-}
-
-function Logo({ className }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h4l2 2H18.5A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-11Z" fill="oklch(0.72 0.17 158)" />
-      <path d="M8 13l3 3 5-6" stroke="oklch(0.14 0.02 160)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    </svg>
   );
 }
 
