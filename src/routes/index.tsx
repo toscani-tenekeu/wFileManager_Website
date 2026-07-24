@@ -16,6 +16,7 @@ function Index() {
       <Hero />
       <LogosStrip />
       <Features />
+      <Screenshots />
       <DatabaseModes />
       <Security />
       <Terminal />
@@ -48,19 +49,14 @@ function Nav() {
           <a href="#admin" className="hover:text-foreground">Admin</a>
         </nav>
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <a
             href={GITHUB}
             target="_blank"
             rel="noreferrer"
-            className="btn-ghost btn-ghost-hover hidden rounded-md px-3 py-1.5 text-xs font-medium md:inline-flex"
+            className="btn-ghost btn-ghost-hover inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium"
           >
-            GitHub
-          </a>
-          <a
-            href="#install"
-            className="btn-brand btn-brand-hover rounded-md px-3 py-1.5 text-xs font-semibold"
-          >
-            Install
+            <GithubIcon className="h-3.5 w-3.5" /> GitHub
           </a>
         </div>
       </div>
@@ -72,21 +68,10 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative overflow-hidden border-b border-border">
-      <div className="absolute inset-0 hero-glow" aria-hidden />
       <div className="absolute inset-0 grid-bg" aria-hidden />
       <div className="relative mx-auto max-w-6xl px-4 pb-24 pt-20 md:pt-28">
         <div className="mx-auto max-w-3xl text-center">
-          <a
-            href={GITHUB}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <span className="h-1.5 w-1.5 rounded-full brand-text" style={{ backgroundColor: "var(--brand)" }} />
-            v1 — MIT licensed, built by KmerHosting LLC
-            <span aria-hidden>→</span>
-          </a>
-          <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
+          <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
             The open source file manager
             <br />
             <span className="brand-text">for Linux servers.</span>
@@ -117,9 +102,6 @@ function Hero() {
 
           <div className="mx-auto mt-10 max-w-2xl">
             <TerminalBlock cmd={INSTALL_CMD} />
-            <p className="mt-3 text-xs text-muted-foreground">
-              Ubuntu 20.04+ · amd64 / arm64 · Domain with A record required · HTTPS via Certbot
-            </p>
           </div>
         </div>
 
