@@ -54,7 +54,7 @@ function PricingPage() {
                   <Feature>SQLite stored at /var/lib/wfilemanager/wfilemanager.db</Feature>
                   <Feature>Application records remain on your server</Feature>
                   <Feature>You manage backups, restores, migrations and maintenance</Feature>
-                  <Feature>Best for operators who want full local control</Feature>
+                  <Feature>Uninstall removes local SQLite data and configuration</Feature>
                   <Feature>Community support</Feature>
                 </ul>
 
@@ -90,6 +90,7 @@ function PricingPage() {
                   <Feature>100 MB included, then $1 USD/year per additional 100 MB</Feature>
                   <Feature>Unpaid +7 days: account suspended</Feature>
                   <Feature>Unpaid +30 days: managed data and account deleted</Feature>
+                  <Feature>Uninstall can be local-only or permanent Pro deletion</Feature>
                   <Feature>Priority support</Feature>
                 </ul>
 
@@ -119,7 +120,9 @@ function PricingPage() {
             </div>
 
             <div className="mx-auto mt-6 max-w-4xl rounded-lg border border-border bg-[var(--surface-1)] p-5 text-center text-sm text-muted-foreground">
-              Pro costs $50 USD per instance per year and includes 100 MB of managed application storage. A paid activation token is required before setup. If payment is more than 7 days overdue, the Pro account is suspended; if payment is more than 30 days overdue, managed application data and the account are deleted. Contact{" "}
+              Pro costs $50 USD per instance per year and includes 100 MB of managed application storage. A paid activation token is required before setup. If payment is more than 7 days overdue, the Pro account is suspended; if payment is more than 30 days overdue, managed application data and the account are deleted. Read the{" "}
+              <a href="/terms" className="font-medium brand-text hover:underline">Terms of Use</a>
+              {" "}or contact{" "}
               <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium brand-text hover:underline">
                 {SUPPORT_EMAIL}
               </a>
