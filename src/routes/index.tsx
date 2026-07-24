@@ -6,8 +6,11 @@ export const Route = createFileRoute("/")({
 });
 
 const GITHUB = "https://github.com/toscani-tenekeu/wFileManager";
+const DOCS = "https://kmerhosting.com/docs";
 const INSTALL_CMD =
   "curl -fsSL https://igihzeyfgwhnuiflamvn.supabase.co/storage/v1/object/public/releases.kmerhosting.com/wfilemanager/install.sh | sudo bash";
+const UNINSTALL_CMD =
+  "curl -fsSL https://igihzeyfgwhnuiflamvn.supabase.co/storage/v1/object/public/releases.kmerhosting.com/wfilemanager/uninstall.sh | sudo bash";
 
 function Index() {
   return (
@@ -34,19 +37,14 @@ function Nav() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-        <a href="#" className="flex items-center gap-2">
-          <Logo className="h-6 w-6" />
+        <a href="#" className="flex items-center">
           <span className="text-sm font-semibold tracking-tight">wFileManager</span>
-          <span className="ml-2 rounded-full border border-border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            Open Source
-          </span>
         </a>
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
           <a href="#features" className="hover:text-foreground">Features</a>
-          <a href="#database" className="hover:text-foreground">Database</a>
-          <a href="#security" className="hover:text-foreground">Security</a>
-          <a href="#install" className="hover:text-foreground">Install</a>
-          <a href="#admin" className="hover:text-foreground">Admin</a>
+          <a href="/pricing" className="hover:text-foreground">Pricing</a>
+          <a href={DOCS} className="hover:text-foreground">Docs</a>
+          <a href="/about" className="hover:text-foreground">About</a>
         </nav>
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -503,6 +501,7 @@ function AdminCommands() {
     ["Reset admin password", "sudo wfilemanager-reset-admin-password"],
     ["Update application", "sudo systemctl start wfilemanager-updater@install.service"],
     ["Roll back to previous release", "sudo systemctl start wfilemanager-updater@rollback.service"],
+    ["Uninstall wFileManager", UNINSTALL_CMD],
   ];
   return (
     <section id="admin" className="border-b border-border bg-[var(--surface-1)]/30">
@@ -510,7 +509,7 @@ function AdminCommands() {
         <SectionHeader
           kicker="Administration"
           title="Everything an operator needs, in the shell"
-          desc="wFileManager ships helper commands and systemd units for status, logs, health, updates and rollback."
+          desc="wFileManager ships helper commands and systemd units for status, logs, health, updates, rollback and clean removal."
         />
         <div className="mx-auto mt-12 max-w-3xl space-y-3">
           {cmds.map(([label, cmd]) => (
@@ -728,38 +727,81 @@ function Logo({ className }: IP) {
   );
 }
 
-/* ---------------- THEME TOGGLE ---------------- */
+/* ---------------- THEME SELECTOR ---------------- */
+type ThemePreference = "system" | "light" | "dark";
+
+function applyThemePreference(theme: ThemePreference) {
+  const shouldUseDark =
+    theme === "dark" ||
+    (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.classList.toggle("dark", shouldUseDark);
+}
+
 function ThemeToggle() {
-  const [theme, setTheme] = React.useState<"light" | "dark">("dark");
+  const [theme, setTheme] = React.useState<ThemePreference>("system");
+
   React.useEffect(() => {
-    const stored = (typeof window !== "undefined" && localStorage.getItem("theme")) as
-      | "light"
-      | "dark"
-      | null;
-    const initial: "light" | "dark" =
-      stored ?? (window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const stored = localStorage.getItem("theme");
+    const initial: ThemePreference =
+      stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
+
     setTheme(initial);
-    document.documentElement.classList.toggle("dark", initial === "dark");
+    applyThemePreference(initial);
+
+    const onSystemThemeChange = () => {
+      const active = localStorage.getItem("theme") ?? "system";
+      if (active === "system") applyThemePreference("system");
+    };
+
+    media.addEventListener("change", onSystemThemeChange);
+    return () => media.removeEventListener("change", onSystemThemeChange);
   }, []);
-  const toggle = () => {
-    const next = theme === "dark" ? "light" : "dark";
+
+  const selectTheme = (next: ThemePreference) => {
     setTheme(next);
-    document.documentElement.classList.toggle("dark", next === "dark");
+    applyThemePreference(next);
     try {
       localStorage.setItem("theme", next);
     } catch {
       /* noop */
     }
   };
+
+  const options: Array<{
+    value: ThemePreference;
+    label: string;
+    icon: (p: IP) => React.ReactElement;
+  }> = [
+    { value: "system", label: "System theme", icon: MonitorIcon },
+    { value: "light", label: "Light theme", icon: SunIcon },
+    { value: "dark", label: "Dark theme", icon: MoonIcon },
+  ];
+
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-label="Toggle theme"
-      className="btn-ghost btn-ghost-hover inline-flex h-8 w-8 items-center justify-center rounded-md"
+    <div
+      role="group"
+      aria-label="Theme preference"
+      className="inline-flex items-center rounded-md border border-border bg-background p-0.5"
     >
-      {theme === "dark" ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
-    </button>
+      {options.map(({ value, label, icon: Icon }) => (
+        <button
+          key={value}
+          type="button"
+          onClick={() => selectTheme(value)}
+          aria-label={label}
+          aria-pressed={theme === value}
+          title={label}
+          className={`inline-flex h-7 w-7 items-center justify-center rounded-[5px] transition-colors ${
+            theme === value
+              ? "bg-[var(--surface-2)] text-foreground"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <Icon className="h-3.5 w-3.5" />
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -856,6 +898,9 @@ function ScreenshotSlot({
 const CopyIcon = (p: IP) => (
   <S {...p} d="M9 9h10v10H9zM5 15V5h10" />
 );
+const MonitorIcon = (p: IP) => (
+  <S {...p} d="M4 5h16v12H4zM8 21h8M12 17v4" />
+);
 const SunIcon = (p: IP) => (
   <S
     {...p}
@@ -891,4 +936,3 @@ const GithubIcon = (p: IP) => (
     <path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.3.1 1.9 1.3 1.9 1.3 1.1 1.9 3 1.4 3.7 1 .1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-6a4.7 4.7 0 0 1 1.2-3.3c-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0C17 4.8 18 5 18 5c.7 1.7.2 2.9.1 3.1.8.9 1.2 2 1.2 3.3 0 4.7-2.8 5.7-5.5 6 .5.4.8 1.1.8 2.3v3.4c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z" />
   </svg>
 );
-
