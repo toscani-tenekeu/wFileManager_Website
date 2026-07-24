@@ -75,7 +75,7 @@ function Hero() {
             <span className="brand-text">for Linux servers.</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-            wFileManager gives your VPS a modern web file explorer, guarded archives, per‑user trash,
+            wFileManager gives your Linux server a modern web file explorer, guarded archives, per‑user trash,
             application accounts with roles, notifications, verified updates and an administrator‑only
             root PTY terminal — all over HTTPS.
           </p>
@@ -269,7 +269,7 @@ function Features() {
     {
       icon: BellIcon,
       title: "Sessions, notifications, presence",
-      desc: "Live session control with notifications and presence, backed by SQLite or managed Supabase.",
+      desc: "Live session control with notifications and presence, using Community SQLite or Pro managed application data.",
     },
     {
       icon: RefreshIcon,
@@ -313,38 +313,20 @@ function DatabaseModes() {
       <div className="mx-auto max-w-6xl px-4 py-24">
         <SectionHeader
           kicker="Database"
-          title="Choose how wFileManager stores its application data"
-          desc="Files always remain on your VPS. The selected mode only controls wFileManager records such as users, roles, sessions, authentication, notifications and settings."
+          title="Choose Community or Pro application data"
+          desc="Community keeps wFileManager records in SQLite on your server. Pro stores those records in managed infrastructure with automatic backups and recovery. Files on your server remain outside both application-data modes."
         />
         <div className="mt-14 grid gap-6 md:grid-cols-2">
           <div className="card-surface p-8">
             <div className="flex items-center gap-3">
-              <CloudIcon className="h-5 w-5 brand-text" />
-              <h3 className="text-base font-semibold">Pro managed application data</h3>
-              <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                Managed
-              </span>
-            </div>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              For $50 USD per instance per year, wFileManager application records are stored in managed infrastructure with automatic backups and restore tools. Each instance includes 100&nbsp;MB of application storage.
-            </p>
-            <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
-              <Bullet>Managed users, roles, sessions, authentication and settings</Bullet>
-              <Bullet>Automatic backups of application records</Bullet>
-              <Bullet>Restore application data after a server reinstall</Bullet>
-              <Bullet>Additional 100 MB for $1 USD per year</Bullet>
-            </ul>
-          </div>
-          <div className="card-surface p-8">
-            <div className="flex items-center gap-3">
               <DbIcon className="h-5 w-5 brand-text" />
-              <h3 className="text-base font-semibold">Community SQLite</h3>
+              <h3 className="text-base font-semibold">SQLite on your server</h3>
               <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                Self-managed
+                Community
               </span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              The free Community mode stores all wFileManager application records locally on the VPS. The server administrator manages database backups, migrations, restores and maintenance.
+              Community is free and stores all wFileManager application records locally. You manage the SQLite database, backups, restores, migrations and maintenance.
             </p>
             <div className="mt-5">
               <CodeBlock code={"/var/lib/wfilemanager/wfilemanager.db"} />
@@ -352,8 +334,26 @@ function DatabaseModes() {
             <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
               <Bullet>SQLite mode only</Bullet>
               <Bullet>No paid licence or subscription required</Bullet>
-              <Bullet>Local session validation on privileged calls</Bullet>
+              <Bullet>Application records remain on your server</Bullet>
               <Bullet>Self-managed backups and recovery</Bullet>
+            </ul>
+          </div>
+          <div className="card-surface p-8">
+            <div className="flex items-center gap-3">
+              <CloudIcon className="h-5 w-5 brand-text" />
+              <h3 className="text-base font-semibold">Managed application data</h3>
+              <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                Pro
+              </span>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Pro costs $50 USD per instance per year and stores wFileManager application records in managed infrastructure with automatic backups and recovery tools. Each instance includes 100&nbsp;MB.
+            </p>
+            <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
+              <Bullet>Managed users, roles, sessions, authentication and settings</Bullet>
+              <Bullet>Automatic backups of application records</Bullet>
+              <Bullet>Restore application data after a server reinstall</Bullet>
+              <Bullet>Additional 100 MB for $1 USD per year</Bullet>
             </ul>
           </div>
         </div>
@@ -371,7 +371,7 @@ function Security() {
     ["Uploads never replace destinations", "Existing files are preserved unless explicitly moved."],
     ["Guarded archive extraction", "Entry count, expanded size, ratio and free space are all checked."],
     ["Verified releases", "Size and SHA‑256 are validated before atomic activation."],
-    ["Hashed recovery secret", "Only a hashed per‑instance secret is stored in Supabase."],
+    ["Hashed recovery secret", "Only a hashed per‑instance secret is stored by the Pro managed backend."],
     ["0600 permissions on secrets", "Recovery key and exported kit are locked to root."],
   ];
   return (
@@ -450,8 +450,8 @@ function Install() {
       <div className="mx-auto max-w-6xl px-4 py-24">
         <SectionHeader
           kicker="Install"
-          title="One command on a fresh Ubuntu VPS"
-          desc="Create the DNS A record first, wait for propagation, then run:"
+          title="One command on a supported Ubuntu server"
+          desc="Point your domain's A record to the public IPv4 address of the server where wFileManager will be installed, then wait until the domain resolves to that address before running the installer."
         />
         <div className="mx-auto mt-10 max-w-3xl">
           <TerminalBlock cmd={INSTALL_CMD} />
@@ -464,7 +464,7 @@ function Install() {
               <Bullet>Ubuntu 20.04 LTS or newer (24.04 LTS recommended)</Bullet>
               <Bullet>KVM, bare metal, or LXC with systemd and root</Bullet>
               <Bullet>amd64 or arm64</Bullet>
-              <Bullet>Domain with A record → server public IPv4</Bullet>
+              <Bullet>Domain with an A record pointing to the server public IPv4 address</Bullet>
               <Bullet>Public ports 80 and 443</Bullet>
             </ul>
           </div>
@@ -481,7 +481,7 @@ function Install() {
         </div>
 
         <p className="mx-auto mt-8 max-w-3xl text-center text-xs text-muted-foreground">
-          Installation by IP address or plain HTTP is not supported. The installer validates DNS and configures HTTPS with Certbot.
+          Installation by IP address or plain HTTP is not supported. The installer verifies that the domain resolves to the server before configuring HTTPS with Certbot.
           A free test subdomain is available at{" "}
           <a href="https://domain.kmerhosting.com" target="_blank" rel="noreferrer" className="brand-text hover:underline">
             domain.kmerhosting.com
@@ -555,7 +555,7 @@ created_at   : 2026-07-24T09:41:00Z`}
             <CodeBlock code="sudo wfilemanager-recovery-kit export /root/wfilemanager-recovery-kit.txt" />
           </div>
           <div className="mt-6 rounded-lg border border-border bg-[var(--surface-1)] p-4 text-sm text-muted-foreground">
-            <span className="text-foreground">Recovery scope:</span> managed recovery covers wFileManager application records only. Files stored on the server filesystem require a separate VPS backup and recovery strategy.
+            <span className="text-foreground">Recovery scope:</span> managed recovery covers wFileManager application records only. Files stored on the server filesystem require a separate server backup and recovery strategy.
           </div>
         </div>
       </div>
@@ -569,7 +569,7 @@ function CTA() {
     <section className="relative overflow-hidden border-b border-border">
       <div className="relative mx-auto max-w-4xl px-4 py-24 text-center">
         <h2 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
-          Ready to give your VPS a proper file manager?
+          Ready to add a proper file manager to your server?
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
           wFileManager is free, MIT‑licensed and designed for Linux server administration. Install in a single command — or review the source first.
@@ -597,14 +597,12 @@ function Footer() {
   return (
     <footer className="bg-background">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm text-muted-foreground md:flex-row">
-        <div className="flex items-center gap-2">
-          <Logo className="h-5 w-5" />
-          <span>
-            <span className="text-foreground">wFileManager</span> · A project by KmerHosting LLC
-          </span>
-        </div>
+        <span>
+          <span className="text-foreground">wFileManager</span> · Developed by KmerHosting LLC
+        </span>
         <div className="flex items-center gap-6">
           <a href={GITHUB} target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
+          <a href={`${GITHUB}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noreferrer" className="hover:text-foreground">Contribute</a>
           <a href={`${GITHUB}/blob/main/SECURITY.md`} target="_blank" rel="noreferrer" className="hover:text-foreground">Security</a>
           <a href={`${GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className="hover:text-foreground">MIT License</a>
         </div>
@@ -719,15 +717,6 @@ const S = (p: IP & { d: string; extra?: React.ReactNode }) => (
   </svg>
 );
 
-function Logo({ className }: IP) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h4l2 2H18.5A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-11Z" fill="oklch(0.72 0.17 158)" />
-      <path d="M8 13l3 3 5-6" stroke="oklch(0.14 0.02 160)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    </svg>
-  );
-}
-
 /* ---------------- THEME SELECTOR ---------------- */
 type ThemePreference = "system" | "light" | "dark";
 
@@ -825,7 +814,7 @@ const SCREENSHOTS: { title: string; desc: string; ratio: string }[] = [
   },
   {
     title: "Setup wizard",
-    desc: "Guided installation: domain, database mode, first administrator.",
+    desc: "Guided installation: domain, data mode and first administrator.",
     ratio: "aspect-[16/10]",
   },
   {
@@ -842,7 +831,7 @@ function Screenshots() {
         <SectionHeader
           kicker="Interfaces"
           title="See wFileManager in action"
-          desc="Drop your screenshots into the placeholders below to illustrate each interface."
+          desc="Explore the main file-management and administration interfaces."
         />
         <div className="mt-14 grid gap-6 md:grid-cols-2">
           {SCREENSHOTS.slice(0, 1).map((s, i) => (
@@ -881,10 +870,10 @@ function ScreenshotSlot({
             <ImageIcon className="h-4 w-4 brand-text" />
           </div>
           <div className="mt-3 text-xs font-medium text-muted-foreground">
-            Image {index} · drop screenshot here
+            Interface preview {index}
           </div>
           <div className="mt-1 font-mono text-[10px] text-muted-foreground/70">
-            src/assets/screenshots/{index}.png
+            wFileManager
           </div>
         </div>
       </div>
