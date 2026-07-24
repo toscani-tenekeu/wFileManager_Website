@@ -16,7 +16,7 @@ export const Route = createFileRoute("/about")({
 });
 
 const GITHUB = "https://github.com/toscani-tenekeu/wFileManager";
-const SUPPORT_EMAIL = "support.wfilemanager@kmerhosting.com";
+const SUPPORT_EMAIL = "support@kmerhosting.com";
 
 function AboutPage() {
   return (
@@ -48,7 +48,7 @@ function AboutPage() {
                 description="Privileged operations are protected by application roles, current-password verification, guarded archive handling and hardened filesystem rules."
               />
               <AboutCard
-                title="Flexible application data"
+                title="Community or Pro"
                 description="Use Community with SQLite on your server, or choose Pro managed application data with automatic backups and recovery tools."
               />
             </div>
@@ -63,10 +63,14 @@ function AboutPage() {
               </section>
 
               <section className="card-surface p-8">
-                <div className="text-xs font-medium uppercase tracking-wider brand-text">Open development</div>
-                <h2 className="mt-3 text-xl font-semibold">Transparent and MIT-licensed</h2>
+                <div className="text-xs font-medium uppercase tracking-wider brand-text">Support</div>
+                <h2 className="mt-3 text-xl font-semibold">One official support mailbox</h2>
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  The source code, security policy and release history are publicly available for review. Operators remain free to inspect the implementation before installing it on a server.
+                  Installation questions, Pro activation, storage expansion and security reports should use {" "}
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium brand-text hover:underline">
+                    {SUPPORT_EMAIL}
+                  </a>
+                  .
                 </p>
               </section>
             </div>
