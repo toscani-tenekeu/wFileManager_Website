@@ -9,14 +9,14 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "Use Community with SQLite on your server at no cost, or choose Pro managed application data for $50 USD per instance per year.",
+          "Choose Community for free SQLite storage on your server, or Pro managed application data for $50 USD per instance per year.",
       },
     ],
   }),
   component: PricingPage,
 });
 
-const SUPPORT_EMAIL = "support.wfilemanager@kmerhosting.com";
+const SUPPORT_EMAIL = "support@kmerhosting.com";
 
 function PricingPage() {
   return (
@@ -27,10 +27,10 @@ function PricingPage() {
           <div className="relative mx-auto max-w-6xl px-4 py-24 md:py-32">
             <div className="mx-auto max-w-2xl text-center">
               <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-                Choose how wFileManager application data is stored
+                Choose your wFileManager edition
               </h1>
               <p className="mt-5 text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-                Community keeps application records in SQLite on your server. Pro stores those records in managed infrastructure with automatic backups and recovery tools.
+                Both editions include the same file-manager features. The difference is where wFileManager stores its own application records and who is responsible for backup and recovery.
               </p>
             </div>
 
@@ -46,15 +46,15 @@ function PricingPage() {
                 <p className="mt-2 text-sm font-medium brand-text">Free forever · No paid licence required</p>
 
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  Community stores all wFileManager application records locally in SQLite. You manage the database, backups, restores, migrations and ongoing maintenance.
+                  Community stores wFileManager users, roles, sessions, authentication records, notifications and settings locally in SQLite on your server.
                 </p>
 
                 <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
                   <Feature>All wFileManager features</Feature>
-                  <Feature>SQLite mode only</Feature>
-                  <Feature>Application records stored on your server</Feature>
-                  <Feature>Self-managed users, roles, sessions and authentication records</Feature>
-                  <Feature>Self-managed backups, restores and database maintenance</Feature>
+                  <Feature>SQLite stored at /var/lib/wfilemanager/wfilemanager.db</Feature>
+                  <Feature>Application records remain on your server</Feature>
+                  <Feature>You manage backups, restores, migrations and maintenance</Feature>
+                  <Feature>Best for operators who want full local control</Feature>
                   <Feature>Community support</Feature>
                 </ul>
 
@@ -67,7 +67,7 @@ function PricingPage() {
               </article>
 
               <article className="card-surface relative flex flex-col overflow-hidden p-8 pt-10">
-                <Ribbon accent>Managed data</Ribbon>
+                <Ribbon accent>Managed app data</Ribbon>
                 <h2 className="pr-20 text-xl font-semibold">Pro</h2>
 
                 <div className="mt-7 flex items-end gap-2">
@@ -79,21 +79,21 @@ function PricingPage() {
                 </p>
 
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  Pro manages wFileManager application records separately from your server, with automatic backups and recovery tools for continuity after a server reinstall or replacement.
+                  Pro stores wFileManager application records in managed infrastructure with backups, recovery metadata and support for server reinstall or replacement.
                 </p>
 
                 <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
+                  <Feature>All wFileManager features</Feature>
                   <Feature>Managed users, roles, sessions and authentication records</Feature>
-                  <Feature>Managed notifications, settings and related application records</Feature>
+                  <Feature>Managed notifications, settings and related records</Feature>
                   <Feature>Automatic backups of wFileManager application data</Feature>
-                  <Feature>Restore users and application records after a server reinstall</Feature>
-                  <Feature>100 MB of managed application storage per instance</Feature>
-                  <Feature>Additional 100 MB for $1 USD per year</Feature>
+                  <Feature>Recovery Kit reconnects a replacement installation</Feature>
+                  <Feature>100 MB included, then $1 USD/year per additional 100 MB</Feature>
                   <Feature>Priority support</Feature>
                 </ul>
 
                 <a
-                  href={`mailto:${SUPPORT_EMAIL}?subject=wFileManager%20Pro%20managed%20data`}
+                  href={`mailto:${SUPPORT_EMAIL}?subject=wFileManager%20Pro%20managed%20application%20data`}
                   className="btn-brand btn-brand-hover mt-auto inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
                 >
                   Contact support
@@ -103,16 +103,16 @@ function PricingPage() {
 
             <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-2">
               <div className="rounded-lg border border-border bg-[var(--surface-1)] p-6">
-                <h2 className="text-sm font-semibold text-foreground">Application data covered by Pro</h2>
+                <h2 className="text-sm font-semibold text-foreground">What Pro stores</h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Managed storage covers records used by wFileManager itself, including application users, roles, sessions, authentication information, notifications and settings.
+                  Pro covers records used by wFileManager itself: application users, roles, sessions, authentication records, notifications, settings, backup metadata and recovery metadata.
                 </p>
               </div>
 
               <div className="rounded-lg border border-border bg-[var(--surface-1)] p-6">
-                <h2 className="text-sm font-semibold text-foreground">Files on your server are not included</h2>
+                <h2 className="text-sm font-semibold text-foreground">What neither edition stores</h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Neither plan stores, backs up or restores the files displayed by the file manager. wFileManager is a management layer above your server filesystem, so server files require a separate backup and recovery strategy.
+                  wFileManager does not store or back up your server filesystem files, websites, databases, uploads or directories. Those remain on your server and require a separate backup policy.
                 </p>
               </div>
             </div>
@@ -122,7 +122,7 @@ function PricingPage() {
               <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium brand-text hover:underline">
                 {SUPPORT_EMAIL}
               </a>
-              {" "}to activate or expand an instance.
+              {" "}to activate Pro, expand storage or ask billing questions.
             </div>
           </div>
         </section>
