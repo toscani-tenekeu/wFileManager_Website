@@ -287,8 +287,8 @@ function Features() {
       <div className="mx-auto max-w-6xl px-4 py-24">
         <SectionHeader
           kicker="Features"
-          title="Everything you need to run files on a VPS"
-          desc="One binary. One web interface. Built for real Linux servers, not toy sandboxes."
+          title="Manage your server files from one secure interface"
+          desc="Browse, edit, transfer, archive and administer files directly from the browser."
         />
         <div className="mt-14 grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-3">
           {items.map(({ icon: Ico, title, desc }) => (
@@ -313,45 +313,47 @@ function DatabaseModes() {
       <div className="mx-auto max-w-6xl px-4 py-24">
         <SectionHeader
           kicker="Database"
-          title="Pick the storage that fits your server"
-          desc="Files always stay on your VPS. Only accounts, roles, sessions and notifications live in the chosen database."
+          title="Choose how wFileManager stores its application data"
+          desc="Files always remain on your VPS. The selected mode only controls wFileManager records such as users, roles, sessions, authentication, notifications and settings."
         />
         <div className="mt-14 grid gap-6 md:grid-cols-2">
           <div className="card-surface p-8">
             <div className="flex items-center gap-3">
               <CloudIcon className="h-5 w-5 brand-text" />
-              <h3 className="text-base font-semibold">KmerHosting managed Supabase</h3>
+              <h3 className="text-base font-semibold">Pro managed application data</h3>
               <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                Fastest start
+                Managed
               </span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Best for evaluation and testing. Accounts, roles, sessions, notifications and app settings live in a managed project. Each server is capped at 100&nbsp;MB of application data.
+              For $50 USD per instance per year, wFileManager application records are stored in managed infrastructure with automatic backups and restore tools. Each instance includes 100&nbsp;MB of application storage.
             </p>
             <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
-              <Bullet>Create a new installation from the installer</Bullet>
-              <Bullet>Recover an existing installation with its Recovery Kit</Bullet>
-              <Bullet>Permanently delete a remote installation</Bullet>
+              <Bullet>Managed users, roles, sessions, authentication and settings</Bullet>
+              <Bullet>Automatic backups of application records</Bullet>
+              <Bullet>Restore application data after a server reinstall</Bullet>
+              <Bullet>Additional 100 MB for $1 USD per year</Bullet>
             </ul>
           </div>
           <div className="card-surface p-8">
             <div className="flex items-center gap-3">
               <DbIcon className="h-5 w-5 brand-text" />
-              <h3 className="text-base font-semibold">SQLite on this VPS</h3>
+              <h3 className="text-base font-semibold">Community SQLite</h3>
               <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                Recommended
+                Self-managed
               </span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Best for long‑term installations. Application records are kept locally, validated by privileged API operations and rate‑limited against repeated sign‑in failures.
+              The free Community mode stores all wFileManager application records locally on the VPS. The server administrator manages database backups, migrations, restores and maintenance.
             </p>
             <div className="mt-5">
               <CodeBlock code={"/var/lib/wfilemanager/wfilemanager.db"} />
             </div>
             <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
-              <Bullet>No external dependency, no data cap</Bullet>
-              <Bullet>Local session validation on every privileged call</Bullet>
-              <Bullet>Per‑account and per‑IP sign‑in rate limits</Bullet>
+              <Bullet>SQLite mode only</Bullet>
+              <Bullet>No paid licence or subscription required</Bullet>
+              <Bullet>Local session validation on privileged calls</Bullet>
+              <Bullet>Self-managed backups and recovery</Bullet>
             </ul>
           </div>
         </div>
@@ -545,16 +547,15 @@ created_at   : 2026-07-24T09:41:00Z`}
           <SectionHeader
             align="left"
             kicker="Recovery Kit"
-            title="Keep the kit. Rebuild any time."
-            desc="Managed Supabase installations generate a root‑only Recovery Kit. Copy it off the VPS — it's what reconnects a replacement server or permanently deletes an old instance."
+            title="Restore application records after a server reinstall"
+            desc="Pro instances use a root-only Recovery Kit to reconnect a replacement server and restore managed wFileManager users, roles, authentication records, settings and related application data."
           />
           <div className="mt-6 space-y-3">
             <CodeBlock code="sudo wfilemanager-recovery-kit show" />
             <CodeBlock code="sudo wfilemanager-recovery-kit export /root/wfilemanager-recovery-kit.txt" />
           </div>
           <div className="mt-6 rounded-lg border border-border bg-[var(--surface-1)] p-4 text-sm text-muted-foreground">
-            <span className="text-foreground">Inactivity lifecycle:</span> installations send a signed heartbeat every 12h.
-            30 days without a valid heartbeat freezes the instance; 90 days permanently deletes managed records. A successful recovery rotates the key and revokes prior sessions.
+            <span className="text-foreground">Recovery scope:</span> managed recovery covers wFileManager application records only. Files stored on the server filesystem require a separate VPS backup and recovery strategy.
           </div>
         </div>
       </div>
@@ -571,7 +572,7 @@ function CTA() {
           Ready to give your VPS a proper file manager?
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-          wFileManager is free, MIT‑licensed and built for real Linux operators. Install in a single command — or read the source first.
+          wFileManager is free, MIT‑licensed and designed for Linux server administration. Install in a single command — or review the source first.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a href="#install" className="btn-brand btn-brand-hover rounded-md px-5 py-2.5 text-sm font-semibold">
