@@ -9,7 +9,7 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "Choose the free Community edition or request Pro installation assistance and priority support for wFileManager.",
+          "Use wFileManager free of charge or request a professional installation service for a one-time fee of $20 USD per server.",
       },
     ],
   }),
@@ -31,10 +31,10 @@ function PricingPage() {
                 Pricing
               </div>
               <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-                Simple, lifetime pricing
+                Choose self-service or professional installation
               </h1>
               <p className="mt-5 text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-                Use every wFileManager feature at no cost, or choose professional installation assistance and priority support for a one-time fee.
+                wFileManager is free to use. Operators who prefer a professionally prepared deployment can request a one-time installation service for a single server.
               </p>
             </div>
 
@@ -46,23 +46,28 @@ function PricingPage() {
                     Self-service
                   </span>
                 </div>
+
                 <div className="mt-7 flex items-end gap-2">
                   <span className="text-5xl font-semibold tracking-tight">$0</span>
                   <span className="pb-1 text-sm text-muted-foreground">USD</span>
                 </div>
                 <p className="mt-2 text-sm font-medium brand-text">Free forever</p>
+
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  The complete wFileManager experience for administrators who prefer to install and operate the application independently.
+                  Full access to wFileManager for administrators who are comfortable installing, configuring and maintaining the application independently.
                 </p>
+
                 <ul className="mt-7 space-y-3 text-sm text-muted-foreground">
                   <Feature>All wFileManager features</Feature>
                   <Feature>Community support</Feature>
-                  <Feature>Self-service installation and maintenance</Feature>
-                  <Feature>No subscription or usage fee</Feature>
+                  <Feature>Self-managed installation and configuration</Feature>
+                  <Feature>Self-managed updates and server maintenance</Feature>
+                  <Feature>No subscription or usage fees</Feature>
                 </ul>
+
                 <a
                   href="/#install"
-                  className="btn-ghost btn-ghost-hover mt-8 inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
+                  className="btn-ghost btn-ghost-hover mt-auto inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
                 >
                   Install Community
                 </a>
@@ -70,42 +75,64 @@ function PricingPage() {
 
               <article className="card-surface flex flex-col p-8">
                 <div className="flex items-center justify-between gap-4">
-                  <h2 className="text-xl font-semibold">Pro</h2>
+                  <h2 className="text-xl font-semibold">Professional Installation</h2>
                   <span className="rounded-full border border-[var(--brand)]/40 bg-[var(--brand)]/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider brand-text">
                     Assisted
                   </span>
                 </div>
+
                 <div className="mt-7 flex items-end gap-2">
                   <span className="text-5xl font-semibold tracking-tight">$20</span>
                   <span className="pb-1 text-sm text-muted-foreground">USD</span>
                 </div>
                 <p className="mt-2 text-sm font-medium brand-text">
-                  One-time fee per successful installation, per server
+                  One-time fee per server installation
                 </p>
+
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  Professional assistance for operators who want wFileManager installed correctly, with faster access to support when help is required.
+                  A clean installation and initial configuration of wFileManager on one compatible server, completed with professional assistance from the support team.
                 </p>
+
                 <ul className="mt-7 space-y-3 text-sm text-muted-foreground">
-                  <Feature>All wFileManager features</Feature>
-                  <Feature>Priority support</Feature>
-                  <Feature>Installation and initial configuration assistance</Feature>
+                  <Feature>Clean installation on one compatible server</Feature>
+                  <Feature>Initial application configuration</Feature>
+                  <Feature>Basic post-installation verification</Feature>
+                  <Feature>Priority support during the installation process</Feature>
+                  <Feature>30-day money-back guarantee</Feature>
                   <Feature>No recurring subscription</Feature>
                 </ul>
+
                 <a
-                  href={`mailto:${SUPPORT_EMAIL}?subject=wFileManager%20Pro%20installation`}
-                  className="btn-brand btn-brand-hover mt-8 inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
+                  href={`mailto:${SUPPORT_EMAIL}?subject=wFileManager%20professional%20installation`}
+                  className="btn-brand btn-brand-hover mt-auto inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
                 >
-                  Contact support
+                  Request installation
                 </a>
               </article>
             </div>
 
-            <div className="mx-auto mt-8 max-w-4xl rounded-lg border border-border bg-[var(--surface-1)] p-5 text-center text-sm text-muted-foreground">
-              Pro assistance must be requested through{" "}
+            <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-2">
+              <div className="rounded-lg border border-border bg-[var(--surface-1)] p-6">
+                <h2 className="text-sm font-semibold text-foreground">30-day satisfaction guarantee</h2>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  The professional installation fee is refundable when a refund request is submitted within 30 calendar days of the completed installation and the customer is not satisfied with the service.
+                </p>
+              </div>
+
+              <div className="rounded-lg border border-border bg-[var(--surface-1)] p-6">
+                <h2 className="text-sm font-semibold text-foreground">Service scope</h2>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  The service covers installation and initial configuration only. Ongoing data management, file administration, backups, migrations, content recovery and routine server operation are not included after installation.
+                </p>
+              </div>
+            </div>
+
+            <div className="mx-auto mt-6 max-w-4xl rounded-lg border border-border bg-[var(--surface-1)] p-5 text-center text-sm text-muted-foreground">
+              To request the professional installation service, contact{" "}
               <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium brand-text hover:underline">
                 {SUPPORT_EMAIL}
               </a>
-              . The fee applies only after a successful installation on the requested server.
+              . The $20 USD fee applies to each server installation requested.
             </div>
           </div>
         </section>
