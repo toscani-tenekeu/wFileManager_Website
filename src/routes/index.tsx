@@ -164,7 +164,7 @@ function AppPreview() {
                 ["Sessions", KeyIcon],
                 ["Terminal", TerminalIcon],
               ].map(([label, Ico]) => {
-                const I = Ico as (p: { className?: string }) => JSX.Element;
+                const I = Ico as (p: { className?: string }) => React.ReactElement;
                 return (
                   <div key={label as string} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-muted-foreground hover:text-foreground">
                     <I className="h-3.5 w-3.5" />
@@ -206,7 +206,7 @@ function AppPreview() {
                     ["install.sh", "18 KB", "root", "3 days", FileIcon],
                     ["wfilemanager.db", "6.4 MB", "wfm", "Now", DbIcon],
                   ].map(([name, size, owner, mod, Ico]) => {
-                    const I = Ico as (p: { className?: string }) => JSX.Element;
+                    const I = Ico as (p: { className?: string }) => React.ReactElement;
                     return (
                       <tr key={name as string} className="hover:bg-[var(--surface-1)]">
                         <td className="flex items-center gap-2 px-3 py-2">
