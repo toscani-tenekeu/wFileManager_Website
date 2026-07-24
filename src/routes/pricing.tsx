@@ -9,7 +9,7 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "Choose Community for free SQLite storage on your server, or Pro managed application data for $50 USD per instance per year.",
+          "Choose Community for free SQLite storage on your server, or Pro managed application data for $50 USD per instance per year with paid activation.",
       },
     ],
   }),
@@ -30,7 +30,7 @@ function PricingPage() {
                 Choose your wFileManager edition
               </h1>
               <p className="mt-5 text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-                Both editions include the same file-manager features. The difference is where wFileManager stores its own application records and who is responsible for backup and recovery.
+                Both editions include the same file-manager features. The difference is where wFileManager stores its own application records and who is responsible for backup, recovery and billing.
               </p>
             </div>
 
@@ -67,7 +67,7 @@ function PricingPage() {
               </article>
 
               <article className="card-surface relative flex flex-col overflow-hidden p-8 pt-10">
-                <Ribbon accent>Managed app data</Ribbon>
+                <Ribbon accent>Paid activation</Ribbon>
                 <h2 className="pr-20 text-xl font-semibold">Pro</h2>
 
                 <div className="mt-7 flex items-end gap-2">
@@ -79,24 +79,25 @@ function PricingPage() {
                 </p>
 
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  Pro stores wFileManager application records in managed infrastructure with backups, recovery metadata and support for server reinstall or replacement.
+                  Pro stores wFileManager application records in managed infrastructure with backups, recovery metadata and support for server reinstall or replacement. A paid activation token is required before first setup.
                 </p>
 
                 <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
                   <Feature>All wFileManager features</Feature>
                   <Feature>Managed users, roles, sessions and authentication records</Feature>
-                  <Feature>Managed notifications, settings and related records</Feature>
                   <Feature>Automatic backups of wFileManager application data</Feature>
                   <Feature>Recovery Kit reconnects a replacement installation</Feature>
                   <Feature>100 MB included, then $1 USD/year per additional 100 MB</Feature>
+                  <Feature>Unpaid +7 days: account suspended</Feature>
+                  <Feature>Unpaid +30 days: managed data and account deleted</Feature>
                   <Feature>Priority support</Feature>
                 </ul>
 
                 <a
-                  href={`mailto:${SUPPORT_EMAIL}?subject=wFileManager%20Pro%20managed%20application%20data`}
+                  href={`mailto:${SUPPORT_EMAIL}?subject=wFileManager%20Pro%20activation`}
                   className="btn-brand btn-brand-hover mt-auto inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
                 >
-                  Contact support
+                  Request Pro activation
                 </a>
               </article>
             </div>
@@ -118,7 +119,7 @@ function PricingPage() {
             </div>
 
             <div className="mx-auto mt-6 max-w-4xl rounded-lg border border-border bg-[var(--surface-1)] p-5 text-center text-sm text-muted-foreground">
-              Pro costs $50 USD per instance per year and includes 100 MB of managed application storage. Each additional 100 MB costs $1 USD per year. Contact{" "}
+              Pro costs $50 USD per instance per year and includes 100 MB of managed application storage. A paid activation token is required before setup. If payment is more than 7 days overdue, the Pro account is suspended; if payment is more than 30 days overdue, managed application data and the account are deleted. Contact{" "}
               <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium brand-text hover:underline">
                 {SUPPORT_EMAIL}
               </a>
