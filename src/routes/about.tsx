@@ -8,7 +8,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "Learn how wFileManager provides secure, browser-based file management for real Linux servers.",
+          "Learn how wFileManager provides secure, browser-based file management for Linux servers.",
       },
     ],
   }),
@@ -31,7 +31,7 @@ function AboutPage() {
                 About
               </div>
               <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-                File management designed for real Linux servers
+                Modern file management for Linux servers
               </h1>
               <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
                 wFileManager gives server administrators a modern web interface for managing the Linux filesystem without reducing operational control or security.
