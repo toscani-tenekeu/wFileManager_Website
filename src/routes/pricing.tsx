@@ -9,7 +9,7 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "Use wFileManager free of charge or request a professional installation service for a one-time fee of $20 USD per server.",
+          "Use the free SQLite-based Community mode or choose Pro managed application data for $50 USD per instance per year.",
       },
     ],
   }),
@@ -27,33 +27,34 @@ function PricingPage() {
           <div className="relative mx-auto max-w-6xl px-4 py-24 md:py-32">
             <div className="mx-auto max-w-2xl text-center">
               <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
-                Choose self-service or professional installation
+                Choose how your application data is managed
               </h1>
               <p className="mt-5 text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-                wFileManager is free to use. Operators who prefer a professionally prepared deployment can request a one-time installation service for a single server.
+                Run wFileManager with a local SQLite database at no cost, or use Pro for managed application data, automatic backups and recovery across server reinstalls.
               </p>
             </div>
 
             <div className="mx-auto mt-14 grid max-w-4xl gap-6 md:grid-cols-2">
               <article className="card-surface relative flex flex-col overflow-hidden p-8 pt-10">
-                <Ribbon>Self-service</Ribbon>
+                <Ribbon>Self-managed</Ribbon>
                 <h2 className="pr-20 text-xl font-semibold">Community</h2>
 
                 <div className="mt-7 flex items-end gap-2">
                   <span className="text-5xl font-semibold tracking-tight">$0</span>
                   <span className="pb-1 text-sm text-muted-foreground">USD</span>
                 </div>
-                <p className="mt-2 text-sm font-medium brand-text">Free forever</p>
+                <p className="mt-2 text-sm font-medium brand-text">Free forever · No paid licence required</p>
 
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  Full access to wFileManager for administrators who are comfortable installing, configuring and maintaining the application independently.
+                  Community runs exclusively with SQLite on your server. You retain full responsibility for the application database, backups, migrations and recovery.
                 </p>
 
                 <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
                   <Feature>All wFileManager features</Feature>
-                  <Feature>Community support</Feature>
-                  <Feature>Self-managed installation and configuration</Feature>
-                  <Feature>Self-managed updates and server maintenance</Feature>
+                  <Feature>SQLite mode only</Feature>
+                  <Feature>Application data stored locally on the VPS</Feature>
+                  <Feature>Self-managed users, roles, sessions and authentication records</Feature>
+                  <Feature>Self-managed backups, restores and database maintenance</Feature>
                   <Feature>No subscription or usage fees</Feature>
                 </ul>
 
@@ -66,61 +67,62 @@ function PricingPage() {
               </article>
 
               <article className="card-surface relative flex flex-col overflow-hidden p-8 pt-10">
-                <Ribbon accent>Assisted</Ribbon>
-                <h2 className="pr-20 text-xl font-semibold">Professional Installation</h2>
+                <Ribbon accent>Managed data</Ribbon>
+                <h2 className="pr-20 text-xl font-semibold">Pro</h2>
 
                 <div className="mt-7 flex items-end gap-2">
-                  <span className="text-5xl font-semibold tracking-tight">$20</span>
-                  <span className="pb-1 text-sm text-muted-foreground">USD</span>
+                  <span className="text-5xl font-semibold tracking-tight">$50</span>
+                  <span className="pb-1 text-sm text-muted-foreground">USD / year</span>
                 </div>
                 <p className="mt-2 text-sm font-medium brand-text">
-                  One-time fee per server installation
+                  Per instance · 100 MB included
                 </p>
 
                 <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                  A clean installation and initial configuration of wFileManager on one compatible server, completed with professional assistance from the support team.
+                  Pro keeps wFileManager application records in managed storage with automatic backups and recovery tools designed to preserve continuity when a server is reinstalled or replaced.
                 </p>
 
                 <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
-                  <Feature>Clean installation on one compatible server</Feature>
-                  <Feature>Initial application configuration</Feature>
-                  <Feature>Basic post-installation verification</Feature>
+                  <Feature>Managed users, roles, sessions and authentication records</Feature>
+                  <Feature>Managed notifications, settings and related application records</Feature>
+                  <Feature>Automatic backups of wFileManager application data</Feature>
+                  <Feature>Restore users and application records after a server reinstall</Feature>
+                  <Feature>100 MB of managed application storage per instance</Feature>
+                  <Feature>Additional 100 MB for $1 USD per year</Feature>
                   <Feature>Priority support</Feature>
-                  <Feature>30-day money-back guarantee</Feature>
-                  <Feature>No recurring subscription</Feature>
                 </ul>
 
                 <a
-                  href={`mailto:${SUPPORT_EMAIL}?subject=wFileManager%20professional%20installation`}
+                  href={`mailto:${SUPPORT_EMAIL}?subject=wFileManager%20Pro%20managed%20data`}
                   className="btn-brand btn-brand-hover mt-auto inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
                 >
-                  Request installation
+                  Contact support
                 </a>
               </article>
             </div>
 
             <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-2">
               <div className="rounded-lg border border-border bg-[var(--surface-1)] p-6">
-                <h2 className="text-sm font-semibold text-foreground">30-day satisfaction guarantee</h2>
+                <h2 className="text-sm font-semibold text-foreground">Application data covered by Pro</h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  The professional installation fee is refundable when a refund request is submitted within 30 calendar days of the completed installation and the customer is not satisfied with the service.
+                  Managed storage covers records used by wFileManager itself, including application users, roles, sessions, authentication information, notifications and settings.
                 </p>
               </div>
 
               <div className="rounded-lg border border-border bg-[var(--surface-1)] p-6">
-                <h2 className="text-sm font-semibold text-foreground">Service scope</h2>
+                <h2 className="text-sm font-semibold text-foreground">Server files are not included</h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  The service covers installation and initial configuration only. Ongoing data management, file administration, backups, migrations, content recovery and routine server operation are not included after installation.
+                  Pro does not store, back up or restore files and data from the server filesystem. wFileManager is a management layer above the server; the files it displays remain on your VPS and require a separate server backup strategy.
                 </p>
               </div>
             </div>
 
             <div className="mx-auto mt-6 max-w-4xl rounded-lg border border-border bg-[var(--surface-1)] p-5 text-center text-sm text-muted-foreground">
-              To request the professional installation service, contact{" "}
+              Pro costs $50 USD per instance per year and includes 100 MB of managed application storage. Each additional 100 MB costs $1 USD per year. Contact{" "}
               <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium brand-text hover:underline">
                 {SUPPORT_EMAIL}
               </a>
-              . The $20 USD fee applies to each server installation requested.
+              {" "}to activate or expand an instance.
             </div>
           </div>
         </section>
