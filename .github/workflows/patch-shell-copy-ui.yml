@@ -1,0 +1,104 @@
+name: Patch shell copy UI
+
+on:
+  push:
+    branches: [pricing-shell-support-update]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, 'automation-patch-complete') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pricing-shell-support-update
+      - name: Patch shell command section
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/routes/index.tsx')
+          text = path.read_text()
+
+          old = '''        <div className="mx-auto mt-12 max-w-3xl space-y-3">
+          {cmds.map(([label, cmd]) => (
+            <div key={label} className="card-surface p-4">
+              <div className="mb-2 text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+              <CodeBlock code={cmd} />
+            </div>
+          ))}
+        </div>'''
+          new = '''        <div className="mx-auto mt-12 max-w-3xl divide-y divide-border border-y border-border">
+          {cmds.map(([label, cmd]) => (
+            <CopyCommand key={label} label={label} cmd={cmd} />
+          ))}
+        </div>'''
+          if old not in text:
+              raise SystemExit('Admin command section pattern not found')
+          text = text.replace(old, new)
+
+          marker = '''function CodeBlock({ code }: { code: string }) {
+  return (
+    <pre className="overflow-x-auto rounded-md border border-border bg-background px-3 py-2 font-mono text-[12px] leading-relaxed text-foreground">
+      <code>{code}</code>
+    </pre>
+  );
+}
+'''
+          insert = '''function CopyCommand({ label, cmd }: { label: string; cmd: string }) {
+  const [copied, setCopied] = React.useState(false);
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(cmd);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* noop */
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0">
+        <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+        <code className="mt-1 block overflow-x-auto whitespace-nowrap font-mono text-[12px] leading-relaxed text-foreground">
+          {cmd}
+        </code>
+      </div>
+      <button
+        type="button"
+        onClick={onCopy}
+        className="btn-ghost btn-ghost-hover inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md px-2.5 py-1.5 text-[11px] font-medium"
+        aria-label={`Copy ${label} command`}
+      >
+        {copied ? <CheckIcon className="h-3 w-3 brand-text" /> : <CopyIcon className="h-3 w-3" />}
+        {copied ? "Copied" : "Copy"}
+      </button>
+    </div>
+  );
+}
+
+'''
+          if insert.strip() not in text:
+              if marker not in text:
+                  raise SystemExit('CodeBlock marker not found')
+              text = text.replace(marker, insert + marker)
+
+          text = text.replace('support.wfilemanager@kmerhosting.com', 'support@kmerhosting.com')
+          path.write_text(text)
+          PY
+      - name: Commit patch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/routes/index.tsx
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "feat: simplify shell command copy UI [automation-patch-complete]"
+          git push
