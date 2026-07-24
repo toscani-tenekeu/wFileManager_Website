@@ -26,10 +26,6 @@ function PricingPage() {
           <div className="absolute inset-0 grid-bg" aria-hidden />
           <div className="relative mx-auto max-w-6xl px-4 py-24 md:py-32">
             <div className="mx-auto max-w-2xl text-center">
-              <div className="mb-3 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider brand-text">
-                <span className="h-1 w-1 rounded-full bg-[var(--brand)]" />
-                Pricing
-              </div>
               <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
                 Choose self-service or professional installation
               </h1>
@@ -39,13 +35,9 @@ function PricingPage() {
             </div>
 
             <div className="mx-auto mt-14 grid max-w-4xl gap-6 md:grid-cols-2">
-              <article className="card-surface flex flex-col p-8">
-                <div className="flex items-center justify-between gap-4">
-                  <h2 className="text-xl font-semibold">Community</h2>
-                  <span className="rounded-full border border-border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                    Self-service
-                  </span>
-                </div>
+              <article className="card-surface relative flex flex-col overflow-hidden p-8 pt-10">
+                <Ribbon>Self-service</Ribbon>
+                <h2 className="pr-20 text-xl font-semibold">Community</h2>
 
                 <div className="mt-7 flex items-end gap-2">
                   <span className="text-5xl font-semibold tracking-tight">$0</span>
@@ -57,7 +49,7 @@ function PricingPage() {
                   Full access to wFileManager for administrators who are comfortable installing, configuring and maintaining the application independently.
                 </p>
 
-                <ul className="mt-7 space-y-3 text-sm text-muted-foreground">
+                <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
                   <Feature>All wFileManager features</Feature>
                   <Feature>Community support</Feature>
                   <Feature>Self-managed installation and configuration</Feature>
@@ -73,13 +65,9 @@ function PricingPage() {
                 </a>
               </article>
 
-              <article className="card-surface flex flex-col p-8">
-                <div className="flex items-center justify-between gap-4">
-                  <h2 className="text-xl font-semibold">Professional Installation</h2>
-                  <span className="rounded-full border border-[var(--brand)]/40 bg-[var(--brand)]/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider brand-text">
-                    Assisted
-                  </span>
-                </div>
+              <article className="card-surface relative flex flex-col overflow-hidden p-8 pt-10">
+                <Ribbon accent>Assisted</Ribbon>
+                <h2 className="pr-20 text-xl font-semibold">Professional Installation</h2>
 
                 <div className="mt-7 flex items-end gap-2">
                   <span className="text-5xl font-semibold tracking-tight">$20</span>
@@ -93,11 +81,11 @@ function PricingPage() {
                   A clean installation and initial configuration of wFileManager on one compatible server, completed with professional assistance from the support team.
                 </p>
 
-                <ul className="mt-7 space-y-3 text-sm text-muted-foreground">
+                <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
                   <Feature>Clean installation on one compatible server</Feature>
                   <Feature>Initial application configuration</Feature>
                   <Feature>Basic post-installation verification</Feature>
-                  <Feature>Priority support during the installation process</Feature>
+                  <Feature>Priority support</Feature>
                   <Feature>30-day money-back guarantee</Feature>
                   <Feature>No recurring subscription</Feature>
                 </ul>
@@ -138,6 +126,20 @@ function PricingPage() {
         </section>
       </main>
     </MarketingLayout>
+  );
+}
+
+function Ribbon({ children, accent = false }: { children: ReactNode; accent?: boolean }) {
+  return (
+    <div
+      className={`absolute -right-12 top-7 w-44 rotate-45 py-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.16em] shadow-sm ${
+        accent
+          ? "bg-[var(--brand)] text-[var(--primary-foreground)]"
+          : "border-y border-border bg-[var(--surface-2)] text-muted-foreground"
+      }`}
+    >
+      {children}
+    </div>
   );
 }
 
