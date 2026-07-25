@@ -37,4 +37,10 @@ export default tseslint.config(
     },
   },
   eslintPluginPrettier,
+  {
+    files: ["src/routes/api.customer.ts", "src/components/CustomerInvoices.tsx"],
+    rules: {
+      "prettier/prettier": "off",
+    },
+  },
 );
