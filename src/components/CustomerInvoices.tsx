@@ -20,30 +20,43 @@ export function CustomerInvoices() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(false);
   const [available, setAvailable] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const load = async () => {
-    setLoading(true);
+  const load = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
-      const response = await fetch("/api/customer?action=invoices", { credentials: "same-origin" });
+      const response = await fetch("/api/customer?action=invoices", { credentials: "same-origin", cache: "no-store" });
       const payload = await response.json().catch(() => ({}));
       if (response.ok) {
         setInvoices(payload.invoices || []);
         setAvailable(true);
+        setError(null);
       } else if (response.status === 401) {
         setAvailable(false);
+        setInvoices([]);
+      } else if (!silent) {
+        setError(payload.error || "Unable to load invoices.");
       }
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
-  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    void load();
+    const timer = window.setInterval(() => void load(true), 15_000);
+    const focus = () => void load(true);
+    window.addEventListener("focus", focus);
+    return () => { window.clearInterval(timer); window.removeEventListener("focus", focus); };
+  }, []);
+
   if (!available && !loading) return null;
 
   return (
     <details className="card-surface p-6">
       <summary className="cursor-pointer font-semibold">Invoices and receipts</summary>
       <div className="mt-5 divide-y divide-border">
+        {error && <div className="mb-3 rounded-md border border-border p-3 text-sm text-muted-foreground">{error}</div>}
         {loading ? <div className="py-4 text-sm text-muted-foreground">Preparing documents…</div> : invoices.length === 0 ? (
           <div className="py-4 text-sm text-muted-foreground">No invoice yet.</div>
         ) : invoices.map((invoice) => (
