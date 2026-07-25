@@ -8,7 +8,7 @@ export const Route = createFileRoute("/terms")({
       {
         name: "description",
         content:
-          "Terms for wFileManager Community and Pro managed application-data service, including licence keys, billing lifecycle, uninstall behavior and operator responsibility.",
+          "Terms for wFileManager Community and Pro managed application-data service, including licence keys, USD account balance, automatic renewals and billing lifecycle.",
       },
     ],
   }),
@@ -46,11 +46,23 @@ function TermsPage() {
 
             <TermSection title="2. Pro licence keys and payment">
               <p>A new Pro installation requires a valid paid licence key before the first administrator account can be created. A licence key may be limited to a specific instance, customer, order, period or storage quota.</p>
-              <p>After checkout, the customer returns to the wFileManager customer dashboard and clicks <strong>Check status</strong>. If CamerPay confirms payment, the dashboard issues the licence key, displays it to the customer and sends the licence key email once.</p>
+              <p>The customer can purchase a key using available USD account balance or pay directly. For direct CamerPay checkout, the customer returns to the dashboard and clicks <strong>Check status</strong>. If payment is confirmed, the dashboard displays the licence key and sends its English confirmation email once.</p>
               <p>A Pro licence key authorizes only the managed wFileManager application-data service. It does not grant server infrastructure, domain registration, filesystem backup, website hosting, database hosting or other services unless those are purchased separately.</p>
             </TermSection>
 
-            <TermSection title="3. Unpaid Pro lifecycle">
+            <TermSection title="3. USD account balance and top-ups">
+              <p>The customer dashboard may provide a prepaid account balance denominated in USD. The balance is account credit for eligible wFileManager purchases and renewals; it is not a bank account, does not earn interest and cannot become negative.</p>
+              <p>Top-ups are requested in USD. A payment provider may process the corresponding settlement through another supported payment currency internally. The amount credited to the wFileManager account remains the USD amount shown before payment.</p>
+              <p>A top-up or wallet transaction is applied once using an idempotent transaction reference. The dashboard displays the resulting balance and transaction history.</p>
+            </TermSection>
+
+            <TermSection title="4. Renewal and automatic renewal">
+              <p>An activated Pro licence can be renewed using available account balance or direct payment. Renewal keeps the same licence key and instance. If renewed before expiry, the new period is added after the existing paid-through date.</p>
+              <p>Automatic renewal can be enabled or disabled for each activated instance. When enabled, the system attempts to charge the current annual Pro price from the USD balance about 7 days before expiry.</p>
+              <p>If the balance is sufficient, the charge and renewal are applied atomically and the customer receives an English confirmation email. If the balance is insufficient, no partial charge and no negative balance are created. The customer receives a notice and may add funds or pay the renewal directly.</p>
+            </TermSection>
+
+            <TermSection title="5. Unpaid Pro lifecycle">
               <p>When a Pro subscription becomes unpaid, the following lifecycle applies:</p>
               <ul>
                 <li>the service enters a grace period after the paid-through date passes;</li>
@@ -60,7 +72,7 @@ function TermsPage() {
               <p>Deletion covers only wFileManager application records stored by the Pro backend. Server filesystem files, websites, databases, uploads, directories, mounted volumes and operating-system configuration are not part of Pro managed application data.</p>
             </TermSection>
 
-            <TermSection title="4. Uninstalling">
+            <TermSection title="6. Uninstalling">
               <p>Community uninstall removes the local application, local SQLite records and configuration from the server.</p>
               <p>Pro uninstall has two separate choices:</p>
               <ul>
@@ -70,20 +82,21 @@ function TermsPage() {
               <p>Permanent Pro deletion requires the saved Recovery Kit. If the Recovery Kit does not match the remote account, remote deletion is rejected.</p>
             </TermSection>
 
-            <TermSection title="5. Operator responsibility">
+            <TermSection title="7. Operator responsibility">
               <p>The server administrator remains responsible for choosing correct paths and commands, maintaining server filesystem backups, backing up websites/databases/uploads, protecting root access and Recovery Kit files, and complying with laws, hosting-provider rules and third-party software licences.</p>
               <p>wFileManager can operate with elevated privileges. Incorrect operations can cause permanent data loss, service interruption or server compromise.</p>
             </TermSection>
 
-            <TermSection title="6. Support">
+            <TermSection title="8. Self-service and technical support">
+              <p>Licence purchase, top-up, payment verification, balance use, renewal and automatic-renewal settings are available through the customer dashboard without staff intervention.</p>
               <p>
-                Official support contact:{" "}
+                Technical and security support contact:{" "}
                 <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium brand-text hover:underline">
                   {SUPPORT_EMAIL}
                 </a>
                 .
               </p>
-              <p>Security issues should be reported to the same support address with enough detail to reproduce the issue. Do not publicly disclose exploitable vulnerabilities before reasonable coordination.</p>
+              <p>Security issues should include enough detail to reproduce the issue. Do not publicly disclose exploitable vulnerabilities before reasonable coordination.</p>
             </TermSection>
           </div>
         </div>
