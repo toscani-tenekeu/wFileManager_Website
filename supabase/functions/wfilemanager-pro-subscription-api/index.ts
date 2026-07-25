@@ -16,6 +16,8 @@ const supabase = createClient(
 );
 
 const encoder = new TextEncoder();
+const CAMERPAY_DASHBOARD_CALLBACK_URL = "https://kmerhosting.com/api/webhooks/camerpay";
+const CAMERPAY_DASHBOARD_RETURN_URL = "https://kmerhosting.com/payment/top-up/return";
 
 type SubscriptionConfig = {
   camerpayApiBaseUrl: string;
@@ -225,8 +227,8 @@ async function createCamerPayLink(config: SubscriptionConfig, order: Record<stri
     customer_name: order.buyer_name,
     customer_email: order.buyer_email,
     merchant_invoice_id: order.order_reference,
-    merchant_callback_url: `${config.functionUrl}/webhook`,
-    merchant_return_url: `${config.siteUrl}/pricing?order=${encodeURIComponent(String(order.order_reference))}`,
+    merchant_callback_url: CAMERPAY_DASHBOARD_CALLBACK_URL,
+    merchant_return_url: CAMERPAY_DASHBOARD_RETURN_URL,
     idempotency_key: order.order_reference,
     source: "api",
   };
@@ -241,9 +243,7 @@ async function createCamerPayLink(config: SubscriptionConfig, order: Record<stri
     body: JSON.stringify(body),
   });
   const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
-  if (!response.ok) {
-    throw new Error(camerPayErrorMessage(response.status, payload));
-  }
+  if (!response.ok) throw new Error(camerPayErrorMessage(response.status, payload));
 
   const paymentUrl = paymentUrlFrom(payload);
   if (!paymentUrl || !/^https?:\/\//i.test(paymentUrl)) throw new Error("CamerPay did not return a payment link");
