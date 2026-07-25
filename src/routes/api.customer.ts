@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 const CUSTOMER_API = "https://igihzeyfgwhnuiflamvn.supabase.co/functions/v1/wfilemanager-customer-api";
+const INVOICE_API = "https://igihzeyfgwhnuiflamvn.supabase.co/functions/v1/wfilemanager-invoice-api";
 const COOKIE_NAME = "wfm_customer_session";
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 
@@ -53,6 +54,7 @@ const allowed = new Set([
   "verify-email",
   "resend-verification",
   "sessions",
+  "invoices",
 ]);
 
 async function proxy(request: Request) {
@@ -63,7 +65,8 @@ async function proxy(request: Request) {
     return Response.json({ error: "Cross-origin request rejected" }, { status: 403 });
   }
 
-  const upstreamUrl = new URL(`${CUSTOMER_API}/${action}`);
+  const baseUrl = action === "invoices" ? INVOICE_API : CUSTOMER_API;
+  const upstreamUrl = new URL(`${baseUrl}/${action}`);
   for (const [key, value] of requestUrl.searchParams) {
     if (key !== "action") upstreamUrl.searchParams.append(key, value);
   }
