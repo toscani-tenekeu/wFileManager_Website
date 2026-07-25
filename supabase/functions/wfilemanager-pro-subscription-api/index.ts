@@ -3,17 +3,16 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-camerpay-signature, x-signature, signature",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-camerpay-signature, x-signature, signature",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
   "Cache-Control": "no-store",
 };
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-const supabase = createClient(
-  supabaseUrl,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-  { auth: { persistSession: false } },
-);
+const supabase = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
+  auth: { persistSession: false },
+});
 
 const encoder = new TextEncoder();
 const CAMERPAY_DASHBOARD_CALLBACK_URL = "https://kmerhosting.com/api/webhooks/camerpay";
@@ -46,7 +45,9 @@ function json(body: unknown, status = 200) {
 }
 
 function bytesToHex(bytes: Uint8Array) {
-  return Array.from(bytes).map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(bytes)
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function randomHex(byteLength = 16) {
@@ -60,7 +61,13 @@ async function sha256(value: string) {
 }
 
 async function hmacHex(secret: string, payload: string) {
-  const key = await crypto.subtle.importKey("raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
   return bytesToHex(new Uint8Array(await crypto.subtle.sign("HMAC", key, encoder.encode(payload))));
 }
 
@@ -75,7 +82,10 @@ async function loadConfig(): Promise<SubscriptionConfig> {
   if (!data) throw new Error("wFileManager Pro subscription configuration is missing");
 
   return {
-    camerpayApiBaseUrl: String(data.camerpay_api_base_url || "https://camerpay.biz").replace(/\/$/, ""),
+    camerpayApiBaseUrl: String(data.camerpay_api_base_url || "https://camerpay.biz").replace(
+      /\/$/,
+      "",
+    ),
     camerpayApiToken: String(data.camerpay_api_token || ""),
     camerpayWebhookSecret: String(data.camerpay_webhook_secret || ""),
     camerpayPaymentMethod: String(data.camerpay_payment_method || "auto"),
@@ -84,7 +94,9 @@ async function loadConfig(): Promise<SubscriptionConfig> {
     mailtrapFromEmail: String(data.mailtrap_from_email || "support@kmerhosting.com"),
     mailtrapFromName: String(data.mailtrap_from_name || "KmerHosting"),
     siteUrl: String(data.site_url || "https://wfilemanager.com").replace(/\/$/, ""),
-    functionUrl: String(data.function_url || `${supabaseUrl}/functions/v1/wfilemanager-pro-subscription-api`).replace(/\/$/, ""),
+    functionUrl: String(
+      data.function_url || `${supabaseUrl}/functions/v1/wfilemanager-pro-subscription-api`,
+    ).replace(/\/$/, ""),
     supportEmail: String(data.support_email || "support@kmerhosting.com"),
     priceUsd: Number(data.price_usd || 50),
     priceXaf: Number(data.price_xaf || 30000),
@@ -94,15 +106,23 @@ async function loadConfig(): Promise<SubscriptionConfig> {
   };
 }
 
-async function verifyWebhookSignature(config: SubscriptionConfig, request: Request, rawBody: string) {
+async function verifyWebhookSignature(
+  config: SubscriptionConfig,
+  request: Request,
+  rawBody: string,
+) {
   if (!config.camerpayWebhookSecret) return true;
-  const signature = request.headers.get("x-camerpay-signature")
-    || request.headers.get("x-signature")
-    || request.headers.get("signature")
-    || "";
-  const normalized = signature.toLowerCase().replace(/^sha256=/, "").trim();
+  const signature =
+    request.headers.get("x-camerpay-signature") ||
+    request.headers.get("x-signature") ||
+    request.headers.get("signature") ||
+    "";
+  const normalized = signature
+    .toLowerCase()
+    .replace(/^sha256=/, "")
+    .trim();
   if (!normalized) return false;
-  return normalized === await hmacHex(config.camerpayWebhookSecret, rawBody);
+  return normalized === (await hmacHex(config.camerpayWebhookSecret, rawBody));
 }
 
 function emailValid(value: string) {
@@ -141,79 +161,100 @@ function pick(obj: Record<string, unknown>, paths: string[]) {
 }
 
 function paymentUrlFrom(payload: Record<string, unknown>) {
-  return clean(pick(payload, [
-    "pay_url",
-    "payUrl",
-    "payment_url",
-    "paymentUrl",
-    "checkout_url",
-    "checkoutUrl",
-    "redirect_url",
-    "redirectUrl",
-    "url",
-    "link",
-    "data.pay_url",
-    "data.payUrl",
-    "data.payment_url",
-    "data.paymentUrl",
-    "data.checkout_url",
-    "data.redirect_url",
-    "data.url",
-    "data.link",
-  ]));
+  return clean(
+    pick(payload, [
+      "pay_url",
+      "payUrl",
+      "payment_url",
+      "paymentUrl",
+      "checkout_url",
+      "checkoutUrl",
+      "redirect_url",
+      "redirectUrl",
+      "url",
+      "link",
+      "data.pay_url",
+      "data.payUrl",
+      "data.payment_url",
+      "data.paymentUrl",
+      "data.checkout_url",
+      "data.redirect_url",
+      "data.url",
+      "data.link",
+    ]),
+  );
 }
 
 function providerRefFrom(payload: Record<string, unknown>) {
-  return clean(pick(payload, [
-    "transaction_uuid",
-    "uuid",
-    "reference",
-    "transaction_id",
-    "transactionId",
-    "payment_id",
-    "paymentId",
-    "data.transaction_uuid",
-    "data.uuid",
-    "data.reference",
-    "data.transaction_id",
-    "data.payment_id",
-  ]));
+  return clean(
+    pick(payload, [
+      "transaction_uuid",
+      "uuid",
+      "reference",
+      "transaction_id",
+      "transactionId",
+      "payment_id",
+      "paymentId",
+      "data.transaction_uuid",
+      "data.uuid",
+      "data.reference",
+      "data.transaction_id",
+      "data.payment_id",
+    ]),
+  );
 }
 
 function invoiceFromWebhook(payload: Record<string, unknown>) {
-  return clean(pick(payload, [
-    "merchant_invoice_id",
-    "merchantInvoiceId",
-    "idempotency_key",
-    "invoice_id",
-    "invoiceId",
-    "order_reference",
-    "orderReference",
-    "data.merchant_invoice_id",
-    "data.merchantInvoiceId",
-    "data.idempotency_key",
-    "data.invoice_id",
-    "data.order_reference",
-  ]));
+  return clean(
+    pick(payload, [
+      "merchant_invoice_id",
+      "merchantInvoiceId",
+      "idempotency_key",
+      "invoice_id",
+      "invoiceId",
+      "order_reference",
+      "orderReference",
+      "data.merchant_invoice_id",
+      "data.merchantInvoiceId",
+      "data.idempotency_key",
+      "data.invoice_id",
+      "data.order_reference",
+    ]),
+  );
 }
 
 function statusFromPayload(payload: Record<string, unknown>) {
-  return clean(pick(payload, [
-    "status",
-    "payment_status",
-    "paymentStatus",
-    "data.status",
-    "data.payment_status",
-  ])).toLowerCase();
+  return clean(
+    pick(payload, [
+      "status",
+      "payment_status",
+      "paymentStatus",
+      "data.status",
+      "data.payment_status",
+    ]),
+  ).toLowerCase();
 }
 
 function amountFromPayload(payload: Record<string, unknown>) {
-  const amount = Number(pick(payload, ["amount", "paid_amount", "data.amount", "data.paid_amount"]));
+  const amount = Number(
+    pick(payload, ["amount", "paid_amount", "data.amount", "data.paid_amount"]),
+  );
   return Number.isFinite(amount) ? amount : null;
 }
 
 function isPaidStatus(status: string) {
-  return ["paid", "success", "successful", "completed", "approved", "confirmed", "succeeded", "done", "vire", "viré"].includes(status);
+  return [
+    "paid",
+    "success",
+    "successful",
+    "completed",
+    "approved",
+    "confirmed",
+    "succeeded",
+    "done",
+    "vire",
+    "viré",
+  ].includes(status);
 }
 
 function camerPayErrorMessage(status: number, payload: Record<string, unknown>) {
@@ -245,18 +286,26 @@ async function createCamerPayLink(config: SubscriptionConfig, order: Record<stri
 
   const response = await fetch(`${config.camerpayApiBaseUrl}/api/payment/initiate`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${config.camerpayApiToken}`, "Content-Type": "application/json", Accept: "application/json" },
+    headers: {
+      Authorization: `Bearer ${config.camerpayApiToken}`,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
     body: JSON.stringify(body),
   });
-  const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
+  const payload = (await response.json().catch(() => ({}))) as Record<string, unknown>;
   if (!response.ok) throw new Error(camerPayErrorMessage(response.status, payload));
 
   const paymentUrl = paymentUrlFrom(payload);
-  if (!paymentUrl || !/^https?:\/\//i.test(paymentUrl)) throw new Error("CamerPay did not return a payment link");
+  if (!paymentUrl || !/^https?:\/\//i.test(paymentUrl))
+    throw new Error("CamerPay did not return a payment link");
   return { payload, paymentUrl, providerReference: providerRefFrom(payload) || null };
 }
 
-async function sendActivationEmail(config: SubscriptionConfig, params: { email: string; name: string; orderReference: string; rawToken: string }) {
+async function sendActivationEmail(
+  config: SubscriptionConfig,
+  params: { email: string; name: string; orderReference: string; rawToken: string },
+) {
   if (!config.mailtrapApiToken) throw new Error("Mailtrap API token is not configured");
 
   const text = `Bonjour ${params.name},\n\nVotre paiement wFileManager Pro est confirmé.\n\nToken d'activation Pro : ${params.rawToken}\n\nEntrez ce token sur la page /setup pendant l'installation Pro.\n\nRéférence de commande : ${params.orderReference}\n\nCe token est valable pour une seule installation. Si vous avez une question, contactez ${config.supportEmail}.`;
@@ -275,7 +324,10 @@ async function sendActivationEmail(config: SubscriptionConfig, params: { email: 
 
   const response = await fetch(config.mailtrapApiUrl, {
     method: "POST",
-    headers: { Authorization: `Bearer ${config.mailtrapApiToken}`, "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${config.mailtrapApiToken}`,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
       from: { email: config.mailtrapFromEmail, name: config.mailtrapFromName },
       to: [{ email: params.email, name: params.name }],
@@ -286,7 +338,8 @@ async function sendActivationEmail(config: SubscriptionConfig, params: { email: 
     }),
   });
   const result = await response.text();
-  if (!response.ok) throw new Error(`Mailtrap failed (${response.status}): ${result.slice(0, 300)}`);
+  if (!response.ok)
+    throw new Error(`Mailtrap failed (${response.status}): ${result.slice(0, 300)}`);
 }
 
 async function checkout(config: SubscriptionConfig, body: Record<string, unknown>) {
@@ -307,33 +360,40 @@ async function checkout(config: SubscriptionConfig, body: Record<string, unknown
 
   const reference = orderReference();
 
-  const { data: order, error } = await supabase.from("wfilemanager_pro_orders").insert({
-    order_reference: reference,
-    status: "pending",
-    buyer_name: buyerName,
-    buyer_email: buyerEmail,
-    buyer_phone: buyerPhone,
-    buyer_company: buyerCompany,
-    buyer_country: buyerCountry,
-    billing_address: billingAddress,
-    billing_city: billingCity,
-    billing_postal_code: billingPostalCode,
-    amount_usd: config.priceUsd,
-    amount_xaf: config.priceXaf,
-    currency: config.currency,
-    period_days: config.periodDays,
-    storage_quota_bytes: config.storageQuotaBytes,
-  }).select("*").single();
+  const { data: order, error } = await supabase
+    .from("wfilemanager_pro_orders")
+    .insert({
+      order_reference: reference,
+      status: "pending",
+      buyer_name: buyerName,
+      buyer_email: buyerEmail,
+      buyer_phone: buyerPhone,
+      buyer_company: buyerCompany,
+      buyer_country: buyerCountry,
+      billing_address: billingAddress,
+      billing_city: billingCity,
+      billing_postal_code: billingPostalCode,
+      amount_usd: config.priceUsd,
+      amount_xaf: config.priceXaf,
+      currency: config.currency,
+      period_days: config.periodDays,
+      storage_quota_bytes: config.storageQuotaBytes,
+    })
+    .select("*")
+    .single();
   if (error) throw error;
 
   try {
     const payment = await createCamerPayLink(config, order);
-    const { error: updateError } = await supabase.from("wfilemanager_pro_orders").update({
-      status: "payment_pending",
-      provider_reference: payment.providerReference,
-      provider_payment_url: payment.paymentUrl,
-      provider_payload: payment.payload,
-    }).eq("id", order.id);
+    const { error: updateError } = await supabase
+      .from("wfilemanager_pro_orders")
+      .update({
+        status: "payment_pending",
+        provider_reference: payment.providerReference,
+        provider_payment_url: payment.paymentUrl,
+        provider_payload: payment.payload,
+      })
+      .eq("id", order.id);
     if (updateError) throw updateError;
     return json({
       orderReference: reference,
@@ -344,10 +404,15 @@ async function checkout(config: SubscriptionConfig, body: Record<string, unknown
       status: "payment_pending",
     });
   } catch (error) {
-    await supabase.from("wfilemanager_pro_orders").update({
-      status: "failed",
-      provider_payload: { error: error instanceof Error ? error.message : "Payment link generation failed" },
-    }).eq("id", order.id);
+    await supabase
+      .from("wfilemanager_pro_orders")
+      .update({
+        status: "failed",
+        provider_payload: {
+          error: error instanceof Error ? error.message : "Payment link generation failed",
+        },
+      })
+      .eq("id", order.id);
     throw error;
   }
 }
@@ -355,30 +420,40 @@ async function checkout(config: SubscriptionConfig, body: Record<string, unknown
 async function issueTokenAndEmail(config: SubscriptionConfig, order: Record<string, unknown>) {
   if (order.activation_token_id && order.token_email_sent_at) return;
   if (order.activation_token_id && !order.token_email_sent_at) {
-    await supabase.from("wfilemanager_pro_activation_tokens").update({ status: "revoked", updated_at: new Date().toISOString() }).eq("id", order.activation_token_id);
+    await supabase
+      .from("wfilemanager_pro_activation_tokens")
+      .update({ status: "revoked", updated_at: new Date().toISOString() })
+      .eq("id", order.activation_token_id);
   }
 
   const rawToken = `WFM-PRO-${randomHex(3)}-${randomHex(3)}-${randomHex(3)}-${randomHex(3)}`;
   const tokenHash = await sha256(rawToken);
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
-  const { data: token, error: tokenError } = await supabase.from("wfilemanager_pro_activation_tokens").insert({
-    token_hash: tokenHash,
-    status: "available",
-    period_days: order.period_days,
-    storage_quota_bytes: order.storage_quota_bytes,
-    customer_email: order.buyer_email,
-    order_reference: order.order_reference,
-    expires_at: expiresAt,
-  }).select("id").single();
+  const { data: token, error: tokenError } = await supabase
+    .from("wfilemanager_pro_activation_tokens")
+    .insert({
+      token_hash: tokenHash,
+      status: "available",
+      period_days: order.period_days,
+      storage_quota_bytes: order.storage_quota_bytes,
+      customer_email: order.buyer_email,
+      order_reference: order.order_reference,
+      expires_at: expiresAt,
+    })
+    .select("id")
+    .single();
   if (tokenError) throw tokenError;
 
-  await supabase.from("wfilemanager_pro_orders").update({
-    activation_token_id: token.id,
-    status: "paid",
-    paid_at: order.paid_at || new Date().toISOString(),
-    token_email_error: null,
-  }).eq("id", order.id);
+  await supabase
+    .from("wfilemanager_pro_orders")
+    .update({
+      activation_token_id: token.id,
+      status: "paid",
+      paid_at: order.paid_at || new Date().toISOString(),
+      token_email_error: null,
+    })
+    .eq("id", order.id);
 
   try {
     await sendActivationEmail(config, {
@@ -387,35 +462,52 @@ async function issueTokenAndEmail(config: SubscriptionConfig, order: Record<stri
       orderReference: String(order.order_reference),
       rawToken,
     });
-    await supabase.from("wfilemanager_pro_orders").update({
-      status: "activation_sent",
-      token_email_sent_at: new Date().toISOString(),
-      token_email_error: null,
-    }).eq("id", order.id);
+    await supabase
+      .from("wfilemanager_pro_orders")
+      .update({
+        status: "activation_sent",
+        token_email_sent_at: new Date().toISOString(),
+        token_email_error: null,
+      })
+      .eq("id", order.id);
   } catch (error) {
-    await supabase.from("wfilemanager_pro_orders").update({
-      status: "email_failed",
-      token_email_error: error instanceof Error ? error.message : "Email failed",
-    }).eq("id", order.id);
+    await supabase
+      .from("wfilemanager_pro_orders")
+      .update({
+        status: "email_failed",
+        token_email_error: error instanceof Error ? error.message : "Email failed",
+      })
+      .eq("id", order.id);
     throw error;
   }
 }
 
-async function markOrderPaidFromPayload(config: SubscriptionConfig, order: Record<string, unknown>, payload: Record<string, unknown>) {
+async function markOrderPaidFromPayload(
+  config: SubscriptionConfig,
+  order: Record<string, unknown>,
+  payload: Record<string, unknown>,
+) {
   const paymentStatus = statusFromPayload(payload);
   const paidAmount = amountFromPayload(payload);
   const amountOk = paidAmount === null || paidAmount >= Number(order.amount_xaf || 0);
   const paid = isPaidStatus(paymentStatus) && amountOk;
 
-  await supabase.from("wfilemanager_pro_orders").update({
-    webhook_payload: payload,
-    provider_reference: providerRefFrom(payload) || order.provider_reference,
-    status: paid ? "paid" : order.status,
-    paid_at: paid ? new Date().toISOString() : order.paid_at,
-  }).eq("id", order.id);
+  await supabase
+    .from("wfilemanager_pro_orders")
+    .update({
+      webhook_payload: payload,
+      provider_reference: providerRefFrom(payload) || order.provider_reference,
+      status: paid ? "paid" : order.status,
+      paid_at: paid ? new Date().toISOString() : order.paid_at,
+    })
+    .eq("id", order.id);
 
   if (paid) {
-    const { data: freshOrder, error: reloadError } = await supabase.from("wfilemanager_pro_orders").select("*").eq("id", order.id).single();
+    const { data: freshOrder, error: reloadError } = await supabase
+      .from("wfilemanager_pro_orders")
+      .select("*")
+      .eq("id", order.id)
+      .single();
     if (reloadError) throw reloadError;
     await issueTokenAndEmail(config, freshOrder);
   }
@@ -423,19 +515,31 @@ async function markOrderPaidFromPayload(config: SubscriptionConfig, order: Recor
   return paid;
 }
 
-async function refreshOrderFromCamerPay(config: SubscriptionConfig, order: Record<string, unknown>) {
+async function refreshOrderFromCamerPay(
+  config: SubscriptionConfig,
+  order: Record<string, unknown>,
+) {
   if (!order.provider_reference) return order;
   if (["activation_sent", "email_failed"].includes(String(order.status))) return order;
 
-  const response = await fetch(`${config.camerpayApiBaseUrl}/api/payment/${order.provider_reference}/status`, {
-    method: "GET",
-    headers: { Authorization: `Bearer ${config.camerpayApiToken}`, Accept: "application/json" },
-  });
-  const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
+  const response = await fetch(
+    `${config.camerpayApiBaseUrl}/api/payment/${order.provider_reference}/status`,
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${config.camerpayApiToken}`, Accept: "application/json" },
+    },
+  );
+  const payload = (await response.json().catch(() => ({}))) as Record<string, unknown>;
   if (!response.ok) {
-    await supabase.from("wfilemanager_pro_orders").update({
-      webhook_payload: { status_check_error: camerPayErrorMessage(response.status, payload), status_check_payload: payload },
-    }).eq("id", order.id);
+    await supabase
+      .from("wfilemanager_pro_orders")
+      .update({
+        webhook_payload: {
+          status_check_error: camerPayErrorMessage(response.status, payload),
+          status_check_payload: payload,
+        },
+      })
+      .eq("id", order.id);
     return order;
   }
 
@@ -455,12 +559,17 @@ async function refreshOrderFromCamerPay(config: SubscriptionConfig, order: Recor
 }
 
 async function webhook(config: SubscriptionConfig, request: Request, rawBody: string) {
-  if (!await verifyWebhookSignature(config, request, rawBody)) return json({ error: "Invalid signature" }, 401);
+  if (!(await verifyWebhookSignature(config, request, rawBody)))
+    return json({ error: "Invalid signature" }, 401);
   const payload = JSON.parse(rawBody || "{}") as Record<string, unknown>;
   const reference = invoiceFromWebhook(payload);
   if (!reference) return json({ error: "Missing merchant invoice reference" }, 400);
 
-  const { data: order, error } = await supabase.from("wfilemanager_pro_orders").select("*").eq("order_reference", reference).maybeSingle();
+  const { data: order, error } = await supabase
+    .from("wfilemanager_pro_orders")
+    .select("*")
+    .eq("order_reference", reference)
+    .maybeSingle();
   if (error) throw error;
   if (!order) return json({ error: "Order not found" }, 404);
 
@@ -471,14 +580,16 @@ async function webhook(config: SubscriptionConfig, request: Request, rawBody: st
 async function orderStatus(config: SubscriptionConfig, url: URL) {
   const reference = clean(url.searchParams.get("orderReference") || url.searchParams.get("order"));
   const email = clean(url.searchParams.get("email")).toLowerCase();
-  if (!reference || !emailValid(email)) return json({ error: "Order reference and billing email are required" }, 400);
+  if (!reference || !emailValid(email))
+    return json({ error: "Order reference and billing email are required" }, 400);
   const { data: foundOrder, error } = await supabase
     .from("wfilemanager_pro_orders")
     .select("*")
     .eq("order_reference", reference)
     .maybeSingle();
   if (error) throw error;
-  if (!foundOrder || String(foundOrder.buyer_email).toLowerCase() !== email) return json({ error: "Order not found" }, 404);
+  if (!foundOrder || String(foundOrder.buyer_email).toLowerCase() !== email)
+    return json({ error: "Order not found" }, 404);
 
   const order = await refreshOrderFromCamerPay(config, foundOrder);
 
@@ -506,7 +617,7 @@ Deno.serve(async (request: Request) => {
 
     if (action === "checkout") {
       if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
-      const body = await request.json().catch(() => ({})) as Record<string, unknown>;
+      const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
       return await checkout(config, body);
     }
     if (action === "webhook") {

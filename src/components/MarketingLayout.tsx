@@ -65,12 +65,19 @@ function ThemeSelector() {
     {
       value: "light",
       label: "Light theme",
-      icon: <StrokeIcon className="h-3.5 w-3.5" path="M12 4V2M12 22v-2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8" />,
+      icon: (
+        <StrokeIcon
+          className="h-3.5 w-3.5"
+          path="M12 4V2M12 22v-2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8"
+        />
+      ),
     },
     {
       value: "dark",
       label: "Dark theme",
-      icon: <StrokeIcon className="h-3.5 w-3.5" path="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />,
+      icon: (
+        <StrokeIcon className="h-3.5 w-3.5" path="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+      ),
     },
   ];
 
@@ -128,11 +135,21 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
             wFileManager
           </a>
           <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-            <a href="/#features" className="hover:text-foreground">Features</a>
-            <a href="/pricing" className="hover:text-foreground">Pricing</a>
-            <a href="/account" className="hover:text-foreground">Dashboard</a>
-            <a href={DOCS} className="hover:text-foreground">Docs</a>
-            <a href="/about" className="hover:text-foreground">About</a>
+            <a href="/#features" className="hover:text-foreground">
+              Features
+            </a>
+            <a href="/pricing" className="hover:text-foreground">
+              Pricing
+            </a>
+            <a href="/account" className="hover:text-foreground">
+              Dashboard
+            </a>
+            <a href={DOCS} className="hover:text-foreground">
+              Docs
+            </a>
+            <a href="/about" className="hover:text-foreground">
+              About
+            </a>
           </nav>
           <div className="flex items-center gap-2">
             <ThemeSelector />
@@ -152,12 +169,32 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
 
       <footer className="border-t border-border bg-background">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm text-muted-foreground md:flex-row">
-          <span><span className="text-foreground">wFileManager</span> · A project by KmerHosting LLC</span>
+          <span>
+            <span className="text-foreground">wFileManager</span> · A project by KmerHosting LLC
+          </span>
           <div className="flex items-center gap-6">
-            <a href="/account" className="hover:text-foreground">Dashboard</a>
-            <a href={GITHUB} target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
-            <a href={`${GITHUB}/blob/main/SECURITY.md`} target="_blank" rel="noreferrer" className="hover:text-foreground">Security</a>
-            <a href={`${GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className="hover:text-foreground">MIT License</a>
+            <a href="/account" className="hover:text-foreground">
+              Dashboard
+            </a>
+            <a href={GITHUB} target="_blank" rel="noreferrer" className="hover:text-foreground">
+              GitHub
+            </a>
+            <a
+              href={`${GITHUB}/blob/main/SECURITY.md`}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-foreground"
+            >
+              Security
+            </a>
+            <a
+              href={`${GITHUB}/blob/main/LICENSE`}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-foreground"
+            >
+              MIT License
+            </a>
           </div>
         </div>
       </footer>

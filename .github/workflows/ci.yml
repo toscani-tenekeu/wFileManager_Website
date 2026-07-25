@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - "fix/**"
   pull_request:
 
 concurrency:
@@ -29,6 +31,8 @@ jobs:
       - name: Lint
         run: bun run lint
       - name: Typecheck
-        run: bunx tsc --noEmit
+        run: bun run typecheck
+      - name: Tests
+        run: bun run test
       - name: Build
         run: bun run build

@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { MarketingLayout } from "../components/MarketingLayout";
 import { CustomerAccount } from "../components/CustomerAccount";
 import { CustomerInvoices } from "../components/CustomerInvoices";
+import { CustomerAuthActions } from "../components/CustomerAuthActions";
+import { CustomerSessions } from "../components/CustomerSessions";
 
 export const Route = createFileRoute("/account")({
   head: () => ({
@@ -9,7 +11,8 @@ export const Route = createFileRoute("/account")({
       { title: "Licence keys and balance — wFileManager" },
       {
         name: "description",
-        content: "Manage your USD account balance, wFileManager Pro licence keys, renewals and top-ups.",
+        content:
+          "Manage your USD account balance, wFileManager Pro licence keys, renewals, sessions, invoices and account security.",
       },
     ],
   }),
@@ -24,11 +27,18 @@ function AccountPage() {
           <div>
             <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Licence keys</h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              View your product keys, USD balance, activation status, expiry and renewals.
+              View your product keys, USD balance, activation status, expiry, renewals and account
+              security.
             </p>
           </div>
+          <div className="mt-6">
+            <CustomerAuthActions />
+          </div>
           <CustomerAccount />
-          <div className="mt-6"><CustomerInvoices /></div>
+          <div className="mt-6 grid gap-6">
+            <CustomerSessions />
+            <CustomerInvoices />
+          </div>
         </div>
       </section>
     </MarketingLayout>
