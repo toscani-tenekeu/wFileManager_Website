@@ -130,6 +130,7 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
           <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
             <a href="/#features" className="hover:text-foreground">Features</a>
             <a href="/pricing" className="hover:text-foreground">Pricing</a>
+            <a href="/account" className="hover:text-foreground">Dashboard</a>
             <a href={DOCS} className="hover:text-foreground">Docs</a>
             <a href="/about" className="hover:text-foreground">About</a>
           </nav>
@@ -153,6 +154,7 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm text-muted-foreground md:flex-row">
           <span><span className="text-foreground">wFileManager</span> · A project by KmerHosting LLC</span>
           <div className="flex items-center gap-6">
+            <a href="/account" className="hover:text-foreground">Dashboard</a>
             <a href={GITHUB} target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
             <a href={`${GITHUB}/blob/main/SECURITY.md`} target="_blank" rel="noreferrer" className="hover:text-foreground">Security</a>
             <a href={`${GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className="hover:text-foreground">MIT License</a>
