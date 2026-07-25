@@ -14,6 +14,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as ApiCustomerRouteImport } from './routes/api.customer'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCustomerRoute = ApiCustomerRouteImport.update({
+  id: '/api/customer',
+  path: '/api/customer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/terms': typeof TermsRoute
   '/about': typeof AboutRoute
+  '/api/customer': typeof ApiCustomerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/terms': typeof TermsRoute
   '/about': typeof AboutRoute
+  '/api/customer': typeof ApiCustomerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,14 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/terms': typeof TermsRoute
   '/about': typeof AboutRoute
+  '/api/customer': typeof ApiCustomerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/account' | '/pricing' | '/terms' | '/about'
+  fullPaths: '/' | '/account' | '/pricing' | '/terms' | '/about' | '/api/customer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/pricing' | '/terms' | '/about'
-  id: '__root__' | '/' | '/account' | '/pricing' | '/terms' | '/about'
+  to: '/' | '/account' | '/pricing' | '/terms' | '/about' | '/api/customer'
+  id: '__root__' | '/' | '/account' | '/pricing' | '/terms' | '/about' | '/api/customer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +86,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   TermsRoute: typeof TermsRoute
   AboutRoute: typeof AboutRoute
+  ApiCustomerRoute: typeof ApiCustomerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/customer': {
+      id: '/api/customer'
+      path: '/api/customer'
+      fullPath: '/api/customer'
+      preLoaderRoute: typeof ApiCustomerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +142,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   TermsRoute: TermsRoute,
   AboutRoute: AboutRoute,
+  ApiCustomerRoute: ApiCustomerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
