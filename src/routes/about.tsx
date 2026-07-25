@@ -34,7 +34,8 @@ function AboutPage() {
                 Modern file management for Linux servers
               </h1>
               <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-                wFileManager gives server administrators a modern web interface for managing the Linux filesystem without reducing operational control or security.
+                wFileManager gives server administrators a modern web interface for managing the
+                Linux filesystem without reducing operational control or security.
               </p>
             </div>
 
@@ -55,19 +56,29 @@ function AboutPage() {
 
             <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
               <section className="card-surface p-8">
-                <div className="text-xs font-medium uppercase tracking-wider brand-text">The project</div>
+                <div className="text-xs font-medium uppercase tracking-wider brand-text">
+                  The project
+                </div>
                 <h2 className="mt-3 text-xl font-semibold">Developed by KmerHosting LLC</h2>
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  wFileManager is maintained as a practical server administration tool for Linux operators who need a capable browser-based file manager, verified updates and a protected root terminal.
+                  wFileManager is maintained as a practical server administration tool for Linux
+                  operators who need a capable browser-based file manager, verified updates and a
+                  protected root terminal.
                 </p>
               </section>
 
               <section className="card-surface p-8">
-                <div className="text-xs font-medium uppercase tracking-wider brand-text">Support</div>
+                <div className="text-xs font-medium uppercase tracking-wider brand-text">
+                  Support
+                </div>
                 <h2 className="mt-3 text-xl font-semibold">One official support mailbox</h2>
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  Installation questions, Pro activation, storage expansion and security reports should use {" "}
-                  <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium brand-text hover:underline">
+                  Installation questions, Pro activation, storage expansion and security reports
+                  should use{" "}
+                  <a
+                    href={`mailto:${SUPPORT_EMAIL}`}
+                    className="font-medium brand-text hover:underline"
+                  >
                     {SUPPORT_EMAIL}
                   </a>
                   .

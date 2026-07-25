@@ -87,10 +87,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "wFileManager — Free & open source file manager for Linux servers" },
-      { name: "description", content: "wFileManager is a modern, secure, open source web file manager for Linux servers. Browse the real filesystem, manage users, roles, sessions and an admin-only root terminal." },
+      {
+        name: "description",
+        content:
+          "wFileManager is a modern, secure, open source web file manager for Linux servers. Browse the real filesystem, manage users, roles, sessions and an admin-only root terminal.",
+      },
       { name: "author", content: "KmerHosting LLC" },
-      { property: "og:title", content: "wFileManager — Free & open source file manager for Linux servers" },
-      { property: "og:description", content: "Web file explorer, guarded archives, trash, users & roles, notifications, verified updates and an administrator-only Linux terminal." },
+      {
+        property: "og:title",
+        content: "wFileManager — Free & open source file manager for Linux servers",
+      },
+      {
+        property: "og:description",
+        content:
+          "Web file explorer, guarded archives, trash, users & roles, notifications, verified updates and an administrator-only Linux terminal.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -102,7 +113,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -154,10 +168,18 @@ function SiteNav() {
           wFileManager
         </a>
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-          <a href="/#features" className="hover:text-foreground">Features</a>
-          <a href="/pricing" className="hover:text-foreground">Pricing</a>
-          <a href={DOCS} className="hover:text-foreground">Docs</a>
-          <a href="/about" className="hover:text-foreground">About</a>
+          <a href="/#features" className="hover:text-foreground">
+            Features
+          </a>
+          <a href="/pricing" className="hover:text-foreground">
+            Pricing
+          </a>
+          <a href={DOCS} className="hover:text-foreground">
+            Docs
+          </a>
+          <a href="/about" className="hover:text-foreground">
+            About
+          </a>
         </nav>
         <div className="flex items-center gap-2">
           <ThemeSelector />
@@ -206,14 +228,18 @@ function ThemeSelector() {
     return () => media.removeEventListener("change", apply);
   }, [mode]);
 
-  const options: Array<{ value: ThemeMode; label: string; icon: (props: IconProps) => ReactNode }> = [
-    { value: "system", label: "Use system theme", icon: SystemIcon },
-    { value: "light", label: "Use light theme", icon: SunIcon },
-    { value: "dark", label: "Use dark theme", icon: MoonIcon },
-  ];
+  const options: Array<{ value: ThemeMode; label: string; icon: (props: IconProps) => ReactNode }> =
+    [
+      { value: "system", label: "Use system theme", icon: SystemIcon },
+      { value: "light", label: "Use light theme", icon: SunIcon },
+      { value: "dark", label: "Use dark theme", icon: MoonIcon },
+    ];
 
   return (
-    <div className="inline-flex items-center rounded-md border border-border bg-background p-0.5" aria-label="Theme preference">
+    <div
+      className="inline-flex items-center rounded-md border border-border bg-background p-0.5"
+      aria-label="Theme preference"
+    >
       {options.map(({ value, label, icon: Icon }) => (
         <button
           key={value}
@@ -252,13 +278,16 @@ function enhanceAdminCommands(target: Element) {
     if (labelEl) labelEl.className = "text-[11px] uppercase tracking-wider text-muted-foreground";
 
     const pre = child.querySelector("pre");
-    if (pre) pre.className = "mt-1 overflow-x-auto bg-transparent p-0 font-mono text-[12px] leading-relaxed text-foreground";
+    if (pre)
+      pre.className =
+        "mt-1 overflow-x-auto bg-transparent p-0 font-mono text-[12px] leading-relaxed text-foreground";
 
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = "Copy";
     button.dataset.copyButton = "true";
-    button.className = "btn-ghost btn-ghost-hover inline-flex shrink-0 items-center justify-center rounded-md px-2.5 py-1.5 text-[11px] font-medium";
+    button.className =
+      "btn-ghost btn-ghost-hover inline-flex shrink-0 items-center justify-center rounded-md px-2.5 py-1.5 text-[11px] font-medium";
     button.setAttribute("aria-label", `Copy ${label} command`);
     button.addEventListener("click", async () => {
       try {
@@ -348,10 +377,33 @@ function SiteFooter() {
           <span className="text-foreground">wFileManager</span> · Developed by KmerHosting LLC
         </span>
         <div className="flex flex-wrap items-center justify-center gap-6">
-          <a href={GITHUB} target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
-          <a href={`${GITHUB}/blob/main/CONTRIBUTING.md`} target="_blank" rel="noreferrer" className="hover:text-foreground">Contribute</a>
-          <a href={`${GITHUB}/blob/main/SECURITY.md`} target="_blank" rel="noreferrer" className="hover:text-foreground">Security</a>
-          <a href={`${GITHUB}/blob/main/LICENSE`} target="_blank" rel="noreferrer" className="hover:text-foreground">MIT License</a>
+          <a href={GITHUB} target="_blank" rel="noreferrer" className="hover:text-foreground">
+            GitHub
+          </a>
+          <a
+            href={`${GITHUB}/blob/main/CONTRIBUTING.md`}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-foreground"
+          >
+            Contribute
+          </a>
+          <a
+            href={`${GITHUB}/blob/main/SECURITY.md`}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-foreground"
+          >
+            Security
+          </a>
+          <a
+            href={`${GITHUB}/blob/main/LICENSE`}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-foreground"
+          >
+            MIT License
+          </a>
         </div>
       </div>
     </footer>
@@ -360,7 +412,16 @@ function SiteFooter() {
 
 function SystemIcon({ className }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
       <rect x="3" y="4" width="18" height="13" rx="2" />
       <path d="M8 21h8M12 17v4" />
     </svg>
@@ -369,7 +430,16 @@ function SystemIcon({ className }: IconProps) {
 
 function SunIcon({ className }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
       <path d="M12 4V2M12 22v-2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
       <circle cx="12" cy="12" r="4" />
     </svg>
@@ -378,7 +448,16 @@ function SunIcon({ className }: IconProps) {
 
 function MoonIcon({ className }: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
       <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
     </svg>
   );

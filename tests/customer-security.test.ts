@@ -39,7 +39,7 @@ describe("customer portal security", () => {
   test("keeps invoice retrieval read-only and refreshable", async () => {
     const invoices = await source("src/components/CustomerInvoices.tsx");
     expect(invoices).toContain('cache: "no-store"');
-    expect(invoices).toContain("window.addEventListener(\"focus\"");
+    expect(invoices).toContain('window.addEventListener("focus"');
     expect(invoices).not.toContain('method: "POST"');
   });
 });
