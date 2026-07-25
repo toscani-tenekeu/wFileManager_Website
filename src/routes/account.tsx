@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MarketingLayout } from "../components/MarketingLayout";
 import { CustomerAccount } from "../components/CustomerAccount";
+import { CustomerInvoices } from "../components/CustomerInvoices";
 
 export const Route = createFileRoute("/account")({
   head: () => ({
@@ -27,6 +28,7 @@ function AccountPage() {
             </p>
           </div>
           <CustomerAccount />
+          <div className="mt-6"><CustomerInvoices /></div>
         </div>
       </section>
     </MarketingLayout>
