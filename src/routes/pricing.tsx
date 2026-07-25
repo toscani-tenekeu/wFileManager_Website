@@ -75,14 +75,6 @@ function PricingPage() {
                 <Feature>Automatic backups of wFileManager application data</Feature>
                 <Feature>Recovery Kit reconnects a replacement installation</Feature>
                 <Feature>100 MB included, then $1 USD/year per additional 100 MB</Feature>
-                <Feature>Customer account balance stored and displayed in USD</Feature>
-                <Feature>Recharge the account through CamerPay</Feature>
-                <Feature>Buy or renew using balance or direct payment</Feature>
-                <Feature>Automatic renewal attempts from balance about 7 days before expiry</Feature>
-                <Feature>English email reminders and payment confirmations</Feature>
-                <Feature>Licence key displayed in the dashboard and sent once by email</Feature>
-                <Feature>Unpaid +7 days: account suspended</Feature>
-                <Feature>Unpaid +30 days: managed data and account deleted</Feature>
                 <Feature>Priority technical support</Feature>
               </ul>
               <a href="/account" className="btn-brand btn-brand-hover mt-auto inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold">
