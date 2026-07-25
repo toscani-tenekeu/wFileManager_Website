@@ -33,7 +33,7 @@ describe("customer portal security", () => {
     expect(account).toContain("CustomerSessions");
     expect(recovery).toContain("request-password-reset");
     expect(recovery).toContain("verify-email");
-    expect(sessions).toContain('method: "DELETE"');
+    expect(sessions).toContain('sessionsApi("DELETE"');
   });
 
   test("keeps invoice retrieval read-only and refreshable", async () => {
