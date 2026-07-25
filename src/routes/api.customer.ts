@@ -10,6 +10,9 @@ const CUSTOMER_API =
 const SECURITY_API =
   process.env.WFILEMANAGER_CUSTOMER_SECURITY_API_URL ||
   `${SUPABASE_FUNCTIONS}/wfilemanager-customer-security-api`;
+const FINANCIAL_API =
+  process.env.WFILEMANAGER_CUSTOMER_FINANCIAL_API_URL ||
+  `${SUPABASE_FUNCTIONS}/wfilemanager-customer-financial-api`;
 const INVOICE_API =
   process.env.WFILEMANAGER_INVOICE_API_URL || `${SUPABASE_FUNCTIONS}/wfilemanager-invoice-api`;
 const COOKIE_NAME = "wfm_customer_session";
@@ -58,6 +61,14 @@ const securityActions = new Set([
   "verify-email",
   "resend-verification",
 ]);
+const financialActions = new Set([
+  "checkout",
+  "renew",
+  "auto-renew",
+  "topup",
+  "topup-status",
+  "order",
+]);
 const allowed = new Set([
   "register",
   "login",
@@ -65,16 +76,8 @@ const allowed = new Set([
   "profile",
   "dashboard",
   "me",
-  "checkout",
-  "renew",
-  "auto-renew",
-  "topup",
-  "topup-status",
-  "order",
-  "request-password-reset",
-  "reset-password",
-  "verify-email",
-  "resend-verification",
+  ...financialActions,
+  ...securityActions,
   "sessions",
   "invoices",
 ]);
@@ -82,7 +85,8 @@ const allowed = new Set([
 async function limitedBody(request: Request) {
   if (["GET", "HEAD"].includes(request.method)) return undefined;
   const declared = Number(request.headers.get("content-length") || 0);
-  if (declared > MAX_BODY_BYTES) throw Object.assign(new Error("Request body is too large"), { status: 413 });
+  if (declared > MAX_BODY_BYTES)
+    throw Object.assign(new Error("Request body is too large"), { status: 413 });
   const bytes = new Uint8Array(await request.arrayBuffer());
   if (bytes.byteLength > MAX_BODY_BYTES)
     throw Object.assign(new Error("Request body is too large"), { status: 413 });
@@ -99,7 +103,13 @@ async function proxy(request: Request) {
       return Response.json({ error: "Cross-origin request rejected" }, { status: 403 });
 
     const baseUrl =
-      action === "invoices" ? INVOICE_API : securityActions.has(action) ? SECURITY_API : CUSTOMER_API;
+      action === "invoices"
+        ? INVOICE_API
+        : securityActions.has(action)
+          ? SECURITY_API
+          : financialActions.has(action)
+            ? FINANCIAL_API
+            : CUSTOMER_API;
     const upstreamUrl = new URL(`${baseUrl}/${action}`);
     for (const [key, value] of requestUrl.searchParams)
       if (key !== "action") upstreamUrl.searchParams.append(key, value);
