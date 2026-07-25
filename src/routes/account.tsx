@@ -11,7 +11,7 @@ export const Route = createFileRoute("/account")({
       { title: "Customer dashboard — wFileManager" },
       {
         name: "description",
-        content: "Create a wFileManager customer account, manage billing details, purchase Pro licences and track activation tokens.",
+        content: "Create a wFileManager customer account, manage billing details, buy Pro licence keys and track key status.",
       },
     ],
   }),
@@ -32,6 +32,27 @@ type Customer = {
   billingPostalCode?: string | null;
 };
 
+type LicenceOrder = {
+  orderReference: string;
+  status: string;
+  amountUsd: number;
+  amountXaf: number;
+  currency: string;
+  paymentUrl?: string | null;
+  paidAt?: string | null;
+  activationEmailSentAt?: string | null;
+  emailError?: boolean;
+  licenceKey?: string | null;
+  licenseKey?: string | null;
+  activationKey?: string | null;
+  keyIssuedAt?: string | null;
+  keyStatus?: string | null;
+  keyClaimedAt?: string | null;
+  keyExpiresAt?: string | null;
+  keyInstanceKey?: string | null;
+  createdAt: string;
+};
+
 type Dashboard = {
   customer: Customer;
   plan: {
@@ -41,23 +62,7 @@ type Dashboard = {
     periodDays: number;
     storageQuotaBytes: number;
   };
-  orders: Array<{
-    orderReference: string;
-    status: string;
-    amountUsd: number;
-    amountXaf: number;
-    currency: string;
-    paymentUrl?: string | null;
-    paidAt?: string | null;
-    activationEmailSentAt?: string | null;
-    emailError?: boolean;
-    hasActivationToken?: boolean;
-    tokenStatus?: string | null;
-    tokenClaimedAt?: string | null;
-    tokenExpiresAt?: string | null;
-    tokenInstanceKey?: string | null;
-    createdAt: string;
-  }>;
+  orders: LicenceOrder[];
 };
 
 const emptyForm = {
@@ -80,6 +85,7 @@ function AccountPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const authenticated = Boolean(token && dashboard?.customer);
 
@@ -186,14 +192,14 @@ function AccountPage() {
     }
   };
 
-  const purchaseLicence = async () => {
+  const buyLicenceKey = async () => {
     setCheckoutLoading(true);
     setMessage(null);
     try {
       const payload = await api("/checkout", { method: "POST", body: JSON.stringify({}) });
       await loadDashboard();
-      window.open(payload.paymentUrl, "_blank", "noopener,noreferrer");
-      setMessage("Payment link generated. Complete the payment, then return here to check the order status.");
+      if (payload.paymentUrl) window.open(payload.paymentUrl, "_blank", "noopener,noreferrer");
+      setMessage("Payment link generated. Complete the payment, then return here and click Check status to issue the licence key.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Payment link generation failed.");
     } finally {
@@ -205,13 +211,27 @@ function AccountPage() {
     setLoading(true);
     setMessage(null);
     try {
-      await api(`/order?${new URLSearchParams({ orderReference })}`);
+      const payload = await api(`/order?${new URLSearchParams({ orderReference })}`);
       await loadDashboard();
-      setMessage("Payment status refreshed.");
+      if (payload.licenceKey || payload.licenseKey || payload.activationKey) {
+        setMessage("Payment confirmed. The licence key is now available in your dashboard and the email was processed once.");
+      } else {
+        setMessage("Payment status refreshed.");
+      }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to refresh order.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const copyKey = async (key: string) => {
+    try {
+      await navigator.clipboard.writeText(key);
+      setCopiedKey(key);
+      window.setTimeout(() => setCopiedKey(null), 1500);
+    } catch {
+      setCopiedKey(null);
     }
   };
 
@@ -237,7 +257,7 @@ function AccountPage() {
               wFileManager customer dashboard
             </h1>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted-foreground">
-              Create an account, save billing details, purchase Pro licences, track payments and see whether the activation email has been sent.
+              Create an account, save billing details, buy Pro licence keys, check payment status and view your product keys.
             </p>
           </div>
 
@@ -252,21 +272,13 @@ function AccountPage() {
               <div className="card-surface p-6">
                 <h2 className="text-lg font-semibold">Licence account</h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  The account is only for licence billing and Pro token tracking. It does not access your server or your wFileManager installation.
+                  This account is only for Pro licence billing and key tracking. It does not access your server or your installed wFileManager instance.
                 </p>
                 <div className="mt-6 grid grid-cols-2 rounded-md border border-border p-1">
-                  <button
-                    type="button"
-                    onClick={() => setMode("register")}
-                    className={`rounded px-3 py-2 text-sm ${mode === "register" ? "bg-[var(--surface-2)] text-foreground" : "text-muted-foreground"}`}
-                  >
+                  <button type="button" onClick={() => setMode("register")} className={`rounded px-3 py-2 text-sm ${mode === "register" ? "bg-[var(--surface-2)] text-foreground" : "text-muted-foreground"}`}>
                     Create account
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setMode("login")}
-                    className={`rounded px-3 py-2 text-sm ${mode === "login" ? "bg-[var(--surface-2)] text-foreground" : "text-muted-foreground"}`}
-                  >
+                  <button type="button" onClick={() => setMode("login")} className={`rounded px-3 py-2 text-sm ${mode === "login" ? "bg-[var(--surface-2)] text-foreground" : "text-muted-foreground"}`}>
                     Sign in
                   </button>
                 </div>
@@ -311,13 +323,13 @@ function AccountPage() {
                     </Button>
                   </div>
                   <div className="mt-6 rounded-md border border-border bg-[var(--surface-1)] p-4 text-sm">
-                    <div className="font-medium">Pro licence</div>
+                    <div className="font-medium">Pro licence key</div>
                     <div className="mt-2 text-muted-foreground">
                       ${dashboard.plan.priceUsd} USD/year · {dashboard.plan.priceXaf} {dashboard.plan.currency} checkout · 100 MB managed application data.
                     </div>
                   </div>
-                  <Button type="button" className="mt-5 w-full" onClick={() => void purchaseLicence()} disabled={checkoutLoading}>
-                    {checkoutLoading ? "Generating payment link…" : "Purchase Pro licence"}
+                  <Button type="button" className="mt-5 w-full" onClick={() => void buyLicenceKey()} disabled={checkoutLoading}>
+                    {checkoutLoading ? "Generating payment link…" : "Buy another licence key"}
                   </Button>
                 </div>
 
@@ -342,62 +354,70 @@ function AccountPage() {
 
               <div className="card-surface overflow-hidden p-0">
                 <div className="border-b border-border p-6">
-                  <h2 className="text-lg font-semibold">Licences and payments</h2>
+                  <h2 className="text-lg font-semibold">Licence keys and payments</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Tokens are emailed after payment confirmation. For security, raw activation tokens are not shown here.
+                    After payment, click Check status. If CamerPay confirms the payment, your licence key appears here and the email is processed once.
                   </p>
                 </div>
                 <div className="divide-y divide-border">
                   {dashboard.orders.length === 0 ? (
-                    <div className="p-6 text-sm text-muted-foreground">No licence order yet.</div>
+                    <div className="p-6 text-sm text-muted-foreground">No licence key order yet.</div>
                   ) : (
-                    dashboard.orders.map((order) => (
-                      <div key={order.orderReference} className="p-6">
-                        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                          <div>
-                            <div className="font-mono text-xs text-muted-foreground">{order.orderReference}</div>
-                            <div className="mt-2 text-sm">
-                              <span className="font-medium">${order.amountUsd} USD</span>
-                              <span className="text-muted-foreground"> · {order.amountXaf} {order.currency}</span>
-                            </div>
-                            <div className="mt-2 text-sm text-muted-foreground">
-                              Status: <span className="capitalize text-foreground">{order.status.replace(/_/g, " ")}</span>
-                            </div>
-                            {order.activationEmailSentAt && (
-                              <div className="mt-2 text-sm text-emerald-600 dark:text-emerald-300">
-                                Activation email sent.
+                    dashboard.orders.map((order) => {
+                      const key = order.licenceKey || order.licenseKey || order.activationKey || "";
+                      return (
+                        <div key={order.orderReference} className="p-6">
+                          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                            <div className="min-w-0 flex-1">
+                              <div className="font-mono text-xs text-muted-foreground">{order.orderReference}</div>
+                              <div className="mt-2 text-sm">
+                                <span className="font-medium">${order.amountUsd} USD</span>
+                                <span className="text-muted-foreground"> · {order.amountXaf} {order.currency}</span>
                               </div>
-                            )}
-                            {order.emailError && (
-                              <div className="mt-2 text-sm text-destructive">
-                                Email delivery failed. Contact support@kmerhosting.com.
-                              </div>
-                            )}
-                            {order.tokenStatus && (
                               <div className="mt-2 text-sm text-muted-foreground">
-                                Token: {order.tokenStatus}
-                                {order.tokenClaimedAt ? ` · claimed ${formatDate(order.tokenClaimedAt)}` : ""}
+                                Payment status: <span className="capitalize text-foreground">{order.status.replace(/_/g, " ")}</span>
                               </div>
-                            )}
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {order.paymentUrl && !["paid", "activation_sent", "email_failed"].includes(order.status) && (
-                              <a
-                                href={order.paymentUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="btn-brand btn-brand-hover inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold"
-                              >
-                                Pay
-                              </a>
-                            )}
-                            <Button type="button" variant="outline" onClick={() => void refreshOrder(order.orderReference)} disabled={loading}>
-                              Check status
-                            </Button>
+                              {key ? (
+                                <div className="mt-4 rounded-md border border-border bg-[var(--surface-1)] p-3">
+                                  <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Licence key</div>
+                                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                    <code className="overflow-x-auto whitespace-nowrap font-mono text-sm text-foreground">{key}</code>
+                                    <Button type="button" variant="outline" onClick={() => void copyKey(key)}>
+                                      {copiedKey === key ? "Copied" : "Copy"}
+                                    </Button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="mt-3 text-sm text-muted-foreground">No licence key issued yet.</div>
+                              )}
+                              {order.activationEmailSentAt && (
+                                <div className="mt-2 text-sm text-emerald-600 dark:text-emerald-300">Licence key email sent.</div>
+                              )}
+                              {order.emailError && (
+                                <div className="mt-2 text-sm text-destructive">Email delivery failed. The licence key is still shown above.</div>
+                              )}
+                              {order.keyStatus && (
+                                <div className="mt-2 text-sm text-muted-foreground">
+                                  Key status: {order.keyStatus}
+                                  {order.keyClaimedAt ? ` · claimed ${formatDate(order.keyClaimedAt)}` : ""}
+                                  {order.keyExpiresAt && !order.keyClaimedAt ? ` · expires ${formatDate(order.keyExpiresAt)}` : ""}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {order.paymentUrl && !["paid", "activation_sent", "email_failed"].includes(order.status) && (
+                                <a href={order.paymentUrl} target="_blank" rel="noreferrer" className="btn-brand btn-brand-hover inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold">
+                                  Pay
+                                </a>
+                              )}
+                              <Button type="button" variant="outline" onClick={() => void refreshOrder(order.orderReference)} disabled={loading}>
+                                Check status
+                              </Button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               </div>
