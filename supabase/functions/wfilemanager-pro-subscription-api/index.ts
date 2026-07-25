@@ -76,7 +76,7 @@ async function loadConfig(): Promise<SubscriptionConfig> {
     camerpayApiBaseUrl: String(data.camerpay_api_base_url || "https://camerpay.biz").replace(/\/$/, ""),
     camerpayApiToken: String(data.camerpay_api_token || ""),
     camerpayWebhookSecret: String(data.camerpay_webhook_secret || ""),
-    camerpayPaymentMethod: String(data.camerpay_payment_method || "orange_money"),
+    camerpayPaymentMethod: String(data.camerpay_payment_method || "auto"),
     mailtrapApiToken: String(data.mailtrap_api_token || ""),
     mailtrapApiUrl: String(data.mailtrap_api_url || "https://send.api.mailtrap.io/api/send"),
     mailtrapFromEmail: String(data.mailtrap_from_email || "support@kmerhosting.com"),
@@ -111,6 +111,13 @@ function clean(value: unknown) {
   return String(value || "").trim();
 }
 
+function normalizeCameroonPhone(value: string) {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length === 9 && digits.startsWith("6")) return `237${digits}`;
+  if (digits.length === 12 && digits.startsWith("237")) return digits;
+  return digits;
+}
+
 function orderReference() {
   const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
   return `WFM-PRO-${stamp}-${randomHex(4)}-${randomHex(4)}`;
@@ -133,6 +140,8 @@ function pick(obj: Record<string, unknown>, paths: string[]) {
 
 function paymentUrlFrom(payload: Record<string, unknown>) {
   return clean(pick(payload, [
+    "pay_url",
+    "payUrl",
     "payment_url",
     "paymentUrl",
     "checkout_url",
@@ -141,9 +150,12 @@ function paymentUrlFrom(payload: Record<string, unknown>) {
     "redirectUrl",
     "url",
     "link",
+    "data.pay_url",
+    "data.payUrl",
     "data.payment_url",
     "data.paymentUrl",
     "data.checkout_url",
+    "data.redirect_url",
     "data.url",
     "data.link",
   ]));
@@ -151,12 +163,14 @@ function paymentUrlFrom(payload: Record<string, unknown>) {
 
 function providerRefFrom(payload: Record<string, unknown>) {
   return clean(pick(payload, [
+    "transaction_uuid",
     "uuid",
     "reference",
     "transaction_id",
     "transactionId",
     "payment_id",
     "paymentId",
+    "data.transaction_uuid",
     "data.uuid",
     "data.reference",
     "data.transaction_id",
@@ -194,19 +208,32 @@ function isPaidStatus(status: string) {
   return ["paid", "success", "successful", "completed", "approved", "confirmed", "succeeded", "done", "vire", "viré"].includes(status);
 }
 
+function camerPayErrorMessage(status: number, payload: Record<string, unknown>) {
+  const message = clean(payload.message || payload.error) || `CamerPay failed (${status})`;
+  const errors = payload.errors ? ` ${JSON.stringify(payload.errors)}` : "";
+  return `CamerPay failed (${status}): ${message}${errors}`;
+}
+
 async function createCamerPayLink(config: SubscriptionConfig, order: Record<string, unknown>) {
   if (!config.camerpayApiToken) throw new Error("CamerPay API token is not configured");
 
-  const body = {
-    payment_method: config.camerpayPaymentMethod,
+  const paymentMethod = config.camerpayPaymentMethod.toLowerCase();
+  const body: Record<string, unknown> = {
     amount: order.amount_xaf,
     currency: order.currency,
     customer_phone: order.buyer_phone,
+    customer_name: order.buyer_name,
+    customer_email: order.buyer_email,
     merchant_invoice_id: order.order_reference,
     merchant_callback_url: `${config.functionUrl}/webhook`,
     merchant_return_url: `${config.siteUrl}/pricing?order=${encodeURIComponent(String(order.order_reference))}`,
+    idempotency_key: order.order_reference,
     source: "api",
   };
+
+  if (["orange_money", "mtn_momo", "stripe", "paypal"].includes(paymentMethod)) {
+    body.payment_method = paymentMethod;
+  }
 
   const response = await fetch(`${config.camerpayApiBaseUrl}/api/payment/initiate`, {
     method: "POST",
@@ -214,7 +241,9 @@ async function createCamerPayLink(config: SubscriptionConfig, order: Record<stri
     body: JSON.stringify(body),
   });
   const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
-  if (!response.ok) throw new Error(clean((payload.error || payload.message)) || `CamerPay failed (${response.status})`);
+  if (!response.ok) {
+    throw new Error(camerPayErrorMessage(response.status, payload));
+  }
 
   const paymentUrl = paymentUrlFrom(payload);
   if (!paymentUrl || !/^https?:\/\//i.test(paymentUrl)) throw new Error("CamerPay did not return a payment link");
@@ -257,7 +286,7 @@ async function sendActivationEmail(config: SubscriptionConfig, params: { email: 
 async function checkout(config: SubscriptionConfig, body: Record<string, unknown>) {
   const buyerName = clean(body.buyerName || body.name);
   const buyerEmail = clean(body.buyerEmail || body.email).toLowerCase();
-  const buyerPhone = clean(body.buyerPhone || body.phone);
+  const buyerPhone = normalizeCameroonPhone(clean(body.buyerPhone || body.phone));
   const buyerCompany = clean(body.buyerCompany || body.company) || null;
   const buyerCountry = clean(body.buyerCountry || body.country);
   const billingAddress = clean(body.billingAddress || body.address);
@@ -266,7 +295,7 @@ async function checkout(config: SubscriptionConfig, body: Record<string, unknown
 
   if (buyerName.length < 2) return json({ error: "Buyer name is required" }, 400);
   if (!emailValid(buyerEmail)) return json({ error: "A valid billing email is required" }, 400);
-  if (buyerPhone.length < 6) return json({ error: "Buyer phone is required" }, 400);
+  if (buyerPhone.length < 9) return json({ error: "Buyer phone is required" }, 400);
   if (buyerCountry.length < 2) return json({ error: "Buyer country is required" }, 400);
   if (billingAddress.length < 4) return json({ error: "Billing address is required" }, 400);
 
