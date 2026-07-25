@@ -75,12 +75,15 @@ function PricingPage() {
                 <Feature>Automatic backups of wFileManager application data</Feature>
                 <Feature>Recovery Kit reconnects a replacement installation</Feature>
                 <Feature>100 MB included, then $1 USD/year per additional 100 MB</Feature>
-                <Feature>Check payment status from the customer dashboard</Feature>
-                <Feature>Licence key displayed in the dashboard after payment confirmation</Feature>
-                <Feature>Licence key also sent once by email</Feature>
+                <Feature>Customer account balance stored and displayed in USD</Feature>
+                <Feature>Recharge the account through CamerPay</Feature>
+                <Feature>Buy or renew using balance or direct payment</Feature>
+                <Feature>Automatic renewal attempts from balance about 7 days before expiry</Feature>
+                <Feature>English email reminders and payment confirmations</Feature>
+                <Feature>Licence key displayed in the dashboard and sent once by email</Feature>
                 <Feature>Unpaid +7 days: account suspended</Feature>
                 <Feature>Unpaid +30 days: managed data and account deleted</Feature>
-                <Feature>Priority support</Feature>
+                <Feature>Priority technical support</Feature>
               </ul>
               <a href="/account" className="btn-brand btn-brand-hover mt-auto inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold">
                 Buy a licence key
@@ -104,11 +107,11 @@ function PricingPage() {
           </div>
 
           <div className="mx-auto mt-6 max-w-4xl rounded-lg border border-border bg-[var(--surface-1)] p-5 text-center text-sm text-muted-foreground">
-            Pro costs $50 USD per instance per year and includes 100 MB of managed application storage. The customer dashboard creates payment links, lets customers check payment status, and displays the licence key after payment is confirmed. Read the{" "}
+            Pro costs $50 USD per instance per year and includes 100 MB of managed application storage. The customer account supports a USD balance, account top-ups, balance or direct payment, payment-status checks and automatic renewal from available balance. Read the{" "}
             <a href="/terms" className="font-medium brand-text hover:underline">Terms of Use</a>
             {" "}or contact{" "}
             <a href={`mailto:${SUPPORT_EMAIL}`} className="font-medium brand-text hover:underline">{SUPPORT_EMAIL}</a>
-            {" "}for storage expansion or billing questions.
+            {" "}for technical support.
           </div>
         </div>
       </section>
