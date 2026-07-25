@@ -197,11 +197,17 @@ function invoiceFromWebhook(payload: Record<string, unknown>) {
   ]));
 }
 
-function statusFromWebhook(payload: Record<string, unknown>) {
-  return clean(pick(payload, ["status", "payment_status", "paymentStatus", "data.status", "data.payment_status"])).toLowerCase();
+function statusFromPayload(payload: Record<string, unknown>) {
+  return clean(pick(payload, [
+    "status",
+    "payment_status",
+    "paymentStatus",
+    "data.status",
+    "data.payment_status",
+  ])).toLowerCase();
 }
 
-function amountFromWebhook(payload: Record<string, unknown>) {
+function amountFromPayload(payload: Record<string, unknown>) {
   const amount = Number(pick(payload, ["amount", "paid_amount", "data.amount", "data.paid_amount"]));
   return Number.isFinite(amount) ? amount : null;
 }
@@ -395,18 +401,9 @@ async function issueTokenAndEmail(config: SubscriptionConfig, order: Record<stri
   }
 }
 
-async function webhook(config: SubscriptionConfig, request: Request, rawBody: string) {
-  if (!await verifyWebhookSignature(config, request, rawBody)) return json({ error: "Invalid signature" }, 401);
-  const payload = JSON.parse(rawBody || "{}") as Record<string, unknown>;
-  const reference = invoiceFromWebhook(payload);
-  if (!reference) return json({ error: "Missing merchant invoice reference" }, 400);
-
-  const { data: order, error } = await supabase.from("wfilemanager_pro_orders").select("*").eq("order_reference", reference).maybeSingle();
-  if (error) throw error;
-  if (!order) return json({ error: "Order not found" }, 404);
-
-  const paymentStatus = statusFromWebhook(payload);
-  const paidAmount = amountFromWebhook(payload);
+async function markOrderPaidFromPayload(config: SubscriptionConfig, order: Record<string, unknown>, payload: Record<string, unknown>) {
+  const paymentStatus = statusFromPayload(payload);
+  const paidAmount = amountFromPayload(payload);
   const amountOk = paidAmount === null || paidAmount >= Number(order.amount_xaf || 0);
   const paid = isPaidStatus(paymentStatus) && amountOk;
 
@@ -423,20 +420,68 @@ async function webhook(config: SubscriptionConfig, request: Request, rawBody: st
     await issueTokenAndEmail(config, freshOrder);
   }
 
+  return paid;
+}
+
+async function refreshOrderFromCamerPay(config: SubscriptionConfig, order: Record<string, unknown>) {
+  if (!order.provider_reference) return order;
+  if (["activation_sent", "email_failed"].includes(String(order.status))) return order;
+
+  const response = await fetch(`${config.camerpayApiBaseUrl}/api/payment/${order.provider_reference}/status`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${config.camerpayApiToken}`, Accept: "application/json" },
+  });
+  const payload = await response.json().catch(() => ({})) as Record<string, unknown>;
+  if (!response.ok) {
+    await supabase.from("wfilemanager_pro_orders").update({
+      webhook_payload: { status_check_error: camerPayErrorMessage(response.status, payload), status_check_payload: payload },
+    }).eq("id", order.id);
+    return order;
+  }
+
+  try {
+    await markOrderPaidFromPayload(config, order, payload);
+  } catch (_error) {
+    // issueTokenAndEmail stores email_failed before throwing. Reload below and return a clean status response.
+  }
+
+  const { data: refreshed, error } = await supabase
+    .from("wfilemanager_pro_orders")
+    .select("*")
+    .eq("id", order.id)
+    .single();
+  if (error) throw error;
+  return refreshed;
+}
+
+async function webhook(config: SubscriptionConfig, request: Request, rawBody: string) {
+  if (!await verifyWebhookSignature(config, request, rawBody)) return json({ error: "Invalid signature" }, 401);
+  const payload = JSON.parse(rawBody || "{}") as Record<string, unknown>;
+  const reference = invoiceFromWebhook(payload);
+  if (!reference) return json({ error: "Missing merchant invoice reference" }, 400);
+
+  const { data: order, error } = await supabase.from("wfilemanager_pro_orders").select("*").eq("order_reference", reference).maybeSingle();
+  if (error) throw error;
+  if (!order) return json({ error: "Order not found" }, 404);
+
+  const paid = await markOrderPaidFromPayload(config, order, payload);
   return json({ success: true, orderReference: reference, paid });
 }
 
-async function orderStatus(url: URL) {
+async function orderStatus(config: SubscriptionConfig, url: URL) {
   const reference = clean(url.searchParams.get("orderReference") || url.searchParams.get("order"));
   const email = clean(url.searchParams.get("email")).toLowerCase();
   if (!reference || !emailValid(email)) return json({ error: "Order reference and billing email are required" }, 400);
-  const { data: order, error } = await supabase
+  const { data: foundOrder, error } = await supabase
     .from("wfilemanager_pro_orders")
-    .select("order_reference,status,buyer_email,amount_usd,amount_xaf,currency,provider_payment_url,paid_at,token_email_sent_at,token_email_error,created_at")
+    .select("*")
     .eq("order_reference", reference)
     .maybeSingle();
   if (error) throw error;
-  if (!order || String(order.buyer_email).toLowerCase() !== email) return json({ error: "Order not found" }, 404);
+  if (!foundOrder || String(foundOrder.buyer_email).toLowerCase() !== email) return json({ error: "Order not found" }, 404);
+
+  const order = await refreshOrderFromCamerPay(config, foundOrder);
+
   return json({
     orderReference: order.order_reference,
     status: order.status,
@@ -471,7 +516,7 @@ Deno.serve(async (request: Request) => {
     }
     if (action === "order") {
       if (request.method !== "GET") return json({ error: "Method not allowed" }, 405);
-      return await orderStatus(url);
+      return await orderStatus(config, url);
     }
     if (action === "status") return json({ ok: true });
 
