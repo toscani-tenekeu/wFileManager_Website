@@ -357,12 +357,6 @@ export function CustomerAccount() {
       setMessage("Enter at least $5.00 USD.");
       return;
     }
-    if (!/^2376\d{8}$/.test((dashboard?.customer.phone || "").replace(/\D/g, ""))) {
-      setMessage(
-        "Save a valid Cameroon mobile number in Billing details first (example: +237 690 00 00 00).",
-      );
-      return;
-    }
     setBusy(true);
     setMessage(null);
     try {
