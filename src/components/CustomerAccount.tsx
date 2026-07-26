@@ -128,6 +128,7 @@ export function CustomerAccount() {
   const [initializing, setInitializing] = useState(true);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const [topupAmount, setTopupAmount] = useState("50");
   const [copied, setCopied] = useState<string | null>(null);
   const [quotaTargets, setQuotaTargets] = useState<Record<string, string>>({});
@@ -244,6 +245,12 @@ export function CustomerAccount() {
   const setField = (field: keyof typeof emptyForm, value: string) =>
     setForm((current) => ({ ...current, [field]: value }));
 
+  const continueToPayment = (url: string) => {
+    setPaymentUrl(url);
+    setMessage("Secure payment link created. Redirecting to CamerPay…");
+    window.location.href = url;
+  };
+
   const submitAuth = async () => {
     setBusy(true);
     setMessage(null);
@@ -297,6 +304,7 @@ export function CustomerAccount() {
   const buy = async (paymentMode: "balance" | "direct") => {
     setBusy(true);
     setMessage(null);
+    setPaymentUrl(null);
     try {
       const payload = await api("checkout", {
         method: "POST",
@@ -304,7 +312,7 @@ export function CustomerAccount() {
       });
       await loadDashboard(true);
       if (payload.paymentUrl) {
-        window.location.assign(payload.paymentUrl);
+        continueToPayment(payload.paymentUrl);
       } else {
         setMessage("Licence purchased from your USD balance. The key is ready below.");
       }
@@ -319,13 +327,14 @@ export function CustomerAccount() {
     if (!order.keyInstanceKey) return;
     setBusy(true);
     setMessage(null);
+    setPaymentUrl(null);
     try {
       const payload = await api("renew", {
         method: "POST",
         body: JSON.stringify({ paymentMode, targetInstanceKey: order.keyInstanceKey }),
       });
       await loadDashboard(true);
-      if (payload.paymentUrl) window.location.assign(payload.paymentUrl);
+      if (payload.paymentUrl) continueToPayment(payload.paymentUrl);
       else setMessage(`Renewal completed. New expiry: ${formatDate(payload.paidUntil)}.`);
     } catch (value) {
       setMessage(value instanceof Error ? value.message : "Renewal failed.");
@@ -359,13 +368,14 @@ export function CustomerAccount() {
     }
     setBusy(true);
     setMessage(null);
+    setPaymentUrl(null);
     try {
       const payload = await api("topup", {
         method: "POST",
         body: JSON.stringify({ amountUsd: amount }),
       });
       await loadDashboard(true);
-      if (payload.paymentUrl) window.location.assign(payload.paymentUrl);
+      if (payload.paymentUrl) continueToPayment(payload.paymentUrl);
     } catch (value) {
       setMessage(value instanceof Error ? value.message : "Unable to create the top-up.");
     } finally {
@@ -426,6 +436,7 @@ export function CustomerAccount() {
     }
     setBusy(true);
     setMessage(null);
+    setPaymentUrl(null);
     try {
       const payload = await api("storage-upgrade", {
         method: "POST",
@@ -437,7 +448,7 @@ export function CustomerAccount() {
         }),
       });
       await loadDashboard(true);
-      if (payload.paymentUrl) window.location.assign(payload.paymentUrl);
+      if (payload.paymentUrl) continueToPayment(payload.paymentUrl);
       else setMessage(`Storage upgraded to ${formatBytes(payload.storageQuotaBytes)}.`);
     } catch (value) {
       setMessage(value instanceof Error ? value.message : "Storage upgrade failed.");
@@ -575,6 +586,14 @@ export function CustomerAccount() {
       {message && (
         <div className="rounded-md border border-border bg-[var(--surface-1)] p-4 text-sm text-muted-foreground">
           {message}
+          {paymentUrl && (
+            <a
+              href={paymentUrl}
+              className="mt-3 inline-flex rounded-md border border-[var(--brand)] px-3 py-2 font-medium brand-text hover:bg-[var(--surface-2)]"
+            >
+              Continue to payment
+            </a>
+          )}
         </div>
       )}
 
