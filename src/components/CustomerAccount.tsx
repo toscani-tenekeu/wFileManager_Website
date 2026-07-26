@@ -60,8 +60,6 @@ const emptyForm = {
   password: "",
   fullName: "",
   phone: "",
-  phoneCountryCode: "+",
-  phoneNumber: "",
   company: "",
   country: "",
   billingAddress: "",
@@ -163,8 +161,6 @@ export function CustomerAccount() {
       email: payload.customer.email || "",
       fullName: payload.customer.fullName || "",
       phone: payload.customer.phone || "",
-      phoneCountryCode: "+",
-      phoneNumber: payload.customer.phone || "",
       company: payload.customer.company || "",
       country: payload.customer.country || "",
       billingAddress: payload.customer.billingAddress || "",
@@ -466,8 +462,7 @@ export function CustomerAccount() {
         : /\S+@\S+\.\S+/.test(form.email) &&
           passwordValid(form.password) &&
           form.fullName.trim().length >= 2 &&
-          form.phoneCountryCode.trim().startsWith("+") &&
-          form.phoneNumber.trim().length > 0 &&
+          form.phone.trim().startsWith("+") &&
           form.country.trim().length >= 2 &&
           form.billingAddress.trim().length >= 4;
     return (
@@ -525,16 +520,10 @@ export function CustomerAccount() {
               />
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field
-                  label="Country code"
-                  value={form.phoneCountryCode}
-                  onChange={(value) => setField("phoneCountryCode", value)}
-                  placeholder="+1"
-                />
-                <Field
-                  label="Phone number"
-                  value={form.phoneNumber}
-                  onChange={(value) => setField("phoneNumber", value)}
-                  placeholder="555 123 4567"
+                  label="Phone"
+                  value={form.phone}
+                  onChange={(value) => setField("phone", value)}
+                  placeholder="+1 202-555-0147"
                 />
                 <Field
                   label="Company"
@@ -966,19 +955,12 @@ export function CustomerAccount() {
               value={form.fullName}
               onChange={(value) => setField("fullName", value)}
             />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field
-                label="Country code"
-                value={form.phoneCountryCode}
-                onChange={(value) => setField("phoneCountryCode", value)}
-                placeholder="+1"
-              />
-              <Field
-                label="Phone number"
-                value={form.phoneNumber}
-                onChange={(value) => setField("phoneNumber", value)}
-              />
-            </div>
+            <Field
+              label="Phone"
+              value={form.phone}
+              onChange={(value) => setField("phone", value)}
+              placeholder="+1 202-555-0147"
+            />
             <Field
               label="Company"
               value={form.company}
