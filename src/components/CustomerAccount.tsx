@@ -29,6 +29,9 @@ type LicenceOrder = {
   emailError?: boolean;
   autoRenew?: boolean;
   canRenew?: boolean;
+  storageUsedBytes?: number;
+  storageQuotaBytes?: number;
+  targetQuotaBytes?: number;
 };
 type Topup = {
   reference: string;
@@ -68,6 +71,11 @@ function formatUsd(value: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
     Number(value || 0),
   );
+}
+function formatBytes(value: number) {
+  const bytes = Math.max(0, Number(value || 0));
+  if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
+  return `${Math.round(bytes / 1024 ** 2)} MB`;
 }
 function formatDate(value?: string | null) {
   if (!value) return "—";
@@ -122,6 +130,7 @@ export function CustomerAccount() {
   const [message, setMessage] = useState<string | null>(null);
   const [topupAmount, setTopupAmount] = useState("50");
   const [copied, setCopied] = useState<string | null>(null);
+  const [quotaTargets, setQuotaTargets] = useState<Record<string, string>>({});
 
   const productOrders = useMemo(
     () =>
@@ -164,7 +173,32 @@ export function CustomerAccount() {
   const loadDashboard = async (silent = false) => {
     if (!silent) setBusy(true);
     try {
-      fillDashboard(await api("dashboard"));
+      const payload = await api("dashboard");
+      const quotaByInstance: Record<
+        string,
+        { storageUsedBytes?: number; storageQuotaBytes?: number }
+      > = {};
+      await Promise.all(
+        (payload.orders || [])
+          .filter((order: LicenceOrder) => order.orderType === "storage_upgrade")
+          .map(async (order: LicenceOrder) => {
+            try {
+              const status = await api(
+                "storage-upgrade-status",
+                {},
+                { orderReference: order.orderReference },
+              );
+              if (order.keyInstanceKey) quotaByInstance[order.keyInstanceKey] = status;
+            } catch {
+              // A pending provider payment is expected to remain unresolved here.
+            }
+          }),
+      );
+      const orders = (payload.orders || []).map((order: LicenceOrder) => ({
+        ...order,
+        ...(order.keyInstanceKey ? quotaByInstance[order.keyInstanceKey] || {} : {}),
+      }));
+      fillDashboard({ ...payload, orders });
     } catch (value) {
       const error = value as Error & { status?: number };
       if (error.status !== 401 && !silent) setMessage(error.message);
@@ -192,8 +226,10 @@ export function CustomerAccount() {
     void (async () => {
       setBusy(true);
       try {
-        for (const order of pendingOrders)
-          await api("order", {}, { orderReference: order.orderReference }).catch(() => null);
+        for (const order of pendingOrders) {
+          const action = order.orderType === "storage_upgrade" ? "storage-upgrade-status" : "order";
+          await api(action, {}, { orderReference: order.orderReference }).catch(() => null);
+        }
         for (const topup of pendingFunds)
           await api("topup-status", {}, { reference: topup.reference }).catch(() => null);
         await loadDashboard(true);
@@ -366,6 +402,45 @@ export function CustomerAccount() {
       );
     } catch (value) {
       setMessage(value instanceof Error ? value.message : "Unable to refresh top-up status.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const upgradeQuota = async (order: LicenceOrder, paymentMode: "balance" | "direct") => {
+    if (!order.keyInstanceKey) return;
+    const current = Number(
+      order.storageQuotaBytes || dashboard?.plan.storageQuotaBytes || 104857600,
+    );
+    const targetMb = Number(
+      quotaTargets[order.keyInstanceKey] || Math.ceil(current / 1048576) + 100,
+    );
+    const targetQuotaBytes = targetMb * 1048576;
+    if (
+      !Number.isSafeInteger(targetQuotaBytes) ||
+      targetQuotaBytes <= current ||
+      (targetQuotaBytes - current) % 104857600 !== 0
+    ) {
+      setMessage("Choose a quota greater than the current quota, in 100 MB increments.");
+      return;
+    }
+    setBusy(true);
+    setMessage(null);
+    try {
+      const payload = await api("storage-upgrade", {
+        method: "POST",
+        body: JSON.stringify({
+          paymentMode,
+          instanceKey: order.keyInstanceKey,
+          targetQuotaBytes,
+          idempotencyKey: `quota-${order.keyInstanceKey}-${targetQuotaBytes}-${Date.now()}`,
+        }),
+      });
+      await loadDashboard(true);
+      if (payload.paymentUrl) window.location.assign(payload.paymentUrl);
+      else setMessage(`Storage upgraded to ${formatBytes(payload.storageQuotaBytes)}.`);
+    } catch (value) {
+      setMessage(value instanceof Error ? value.message : "Storage upgrade failed.");
     } finally {
       setBusy(false);
     }
@@ -665,28 +740,92 @@ export function CustomerAccount() {
                         </div>
                       )}
                     </div>
-                    {activated && order.keyInstanceKey && (
-                      <div className="mt-4 flex items-center gap-3 rounded-md border border-border p-3 text-sm">
-                        <button
-                          type="button"
-                          role="switch"
-                          aria-checked={order.autoRenew === true}
-                          onClick={() => void toggleAutoRenew(order)}
-                          disabled={busy}
-                          className={`relative h-6 w-11 rounded-full ${order.autoRenew === true ? "bg-[var(--brand)]" : "bg-muted"}`}
-                        >
-                          <span
-                            className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${order.autoRenew === true ? "left-6" : "left-1"}`}
-                          />
-                        </button>
-                        <div>
-                          <div className="font-medium">Auto-renew from balance</div>
-                          <div className="text-xs text-muted-foreground">
-                            Explicit opt-in. The annual charge is attempted about 7 days before
-                            expiry.
+                    {activated && order.keyInstanceKey && order.orderType !== "storage_upgrade" && (
+                      <>
+                        <div className="mt-4 rounded-md border border-border p-3 text-sm">
+                          <div className="font-medium">Managed storage</div>
+                          <div className="mt-1 text-xs text-muted-foreground">
+                            {formatBytes(order.storageUsedBytes || 0)} used of{" "}
+                            {formatBytes(
+                              order.storageQuotaBytes || dashboard.plan.storageQuotaBytes,
+                            )}{" "}
+                            · $1 per additional 100 MB
+                          </div>
+                          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+                            <Input
+                              type="number"
+                              min={
+                                Math.ceil(
+                                  (order.storageQuotaBytes || dashboard.plan.storageQuotaBytes) /
+                                    1048576,
+                                ) + 100
+                              }
+                              step="100"
+                              value={
+                                quotaTargets[order.keyInstanceKey] ||
+                                Math.ceil(
+                                  (order.storageQuotaBytes || dashboard.plan.storageQuotaBytes) /
+                                    1048576,
+                                ) + 100
+                              }
+                              onChange={(event) =>
+                                setQuotaTargets((current) => ({
+                                  ...current,
+                                  [order.keyInstanceKey!]: event.target.value,
+                                }))
+                              }
+                            />
+                            <span className="text-xs text-muted-foreground">MB target</span>
+                            <Button
+                              type="button"
+                              onClick={() => void upgradeQuota(order, "balance")}
+                              disabled={
+                                busy ||
+                                dashboard.wallet.balanceUsd <
+                                  Math.max(
+                                    1,
+                                    (Number(quotaTargets[order.keyInstanceKey]) * 1048576 -
+                                      Number(
+                                        order.storageQuotaBytes || dashboard.plan.storageQuotaBytes,
+                                      )) /
+                                      104857600,
+                                  )
+                              }
+                            >
+                              Use balance
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => void upgradeQuota(order, "direct")}
+                              disabled={busy}
+                            >
+                              Pay directly
+                            </Button>
                           </div>
                         </div>
-                      </div>
+                        <div className="mt-4 flex items-center gap-3 rounded-md border border-border p-3 text-sm">
+                          <button
+                            type="button"
+                            role="switch"
+                            aria-checked={order.autoRenew === true}
+                            onClick={() => void toggleAutoRenew(order)}
+                            disabled={busy}
+                            className={`relative h-6 w-11 rounded-full ${order.autoRenew === true ? "bg-[var(--brand)]" : "bg-muted"}`}
+                          >
+                            <span
+                              className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${order.autoRenew === true ? "left-6" : "left-1"}`}
+                            />
+                          </button>
+                          <div>
+                            <div className="font-medium">Auto-renew from balance</div>
+                            <div className="text-xs text-muted-foreground">
+                              Explicit opt-in. The annual charge is attempted about 7 days before
+                              expiry.
+                            </div>
+                          </div>
+                        </div>
+                      </>
                     )}
                   </div>
                   <div className="flex flex-wrap gap-2">

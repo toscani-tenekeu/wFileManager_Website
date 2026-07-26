@@ -67,6 +67,8 @@ const financialActions = new Set([
   "auto-renew",
   "topup",
   "topup-status",
+  "storage-upgrade",
+  "storage-upgrade-status",
   "order",
 ]);
 const allowed = new Set([
