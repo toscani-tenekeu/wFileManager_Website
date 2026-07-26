@@ -12,6 +12,7 @@ type Customer = {
   billingAddress?: string | null;
   billingCity?: string | null;
   billingPostalCode?: string | null;
+  emailVerified?: boolean;
 };
 type LicenceOrder = {
   orderReference: string;
@@ -129,6 +130,8 @@ export function CustomerAccount() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [verificationSent, setVerificationSent] = useState(false);
   const [topupAmount, setTopupAmount] = useState("50");
   const [copied, setCopied] = useState<string | null>(null);
   const [quotaTargets, setQuotaTargets] = useState<Record<string, string>>({});
@@ -262,9 +265,13 @@ export function CustomerAccount() {
       }
       await api(mode, { method: "POST", body: JSON.stringify(form) });
       await loadDashboard(true);
+      if (mode === "register") {
+        await api("resend-verification", { method: "POST", body: "{}" });
+        setVerificationSent(true);
+      }
       setMessage(
         mode === "register"
-          ? "Account created. Your session is secured with an HttpOnly cookie."
+          ? "Account created. A six-digit verification code was sent to your email."
           : "Signed in.",
       );
     } catch (value) {
@@ -594,6 +601,85 @@ export function CustomerAccount() {
               Continue to payment
             </a>
           )}
+        </div>
+      )}
+
+      {!dashboard.customer.emailVerified && (
+        <div className="rounded-md border border-[var(--brand)] bg-[var(--surface-1)] p-5">
+          <div className="font-medium">Verify your email to unlock purchases</div>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Enter the six-digit code sent to {dashboard.customer.email}. Codes expire after 15
+            minutes.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Input
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              placeholder="000000"
+              value={verificationCode}
+              onChange={(event) =>
+                setVerificationCode(event.target.value.replace(/\D/g, "").slice(0, 6))
+              }
+              className="w-36 font-mono tracking-[0.2em]"
+            />
+            <Button
+              type="button"
+              disabled={busy || verificationCode.length !== 6}
+              onClick={() =>
+                void (async () => {
+                  setBusy(true);
+                  setMessage(null);
+                  try {
+                    await api("verify-email", {
+                      method: "POST",
+                      body: JSON.stringify({ code: verificationCode }),
+                    });
+                    setVerificationCode("");
+                    setVerificationSent(false);
+                    await loadDashboard(true);
+                    setMessage("Email verified. Purchases are now available.");
+                  } catch (value) {
+                    setMessage(
+                      value instanceof Error ? value.message : "Email verification failed.",
+                    );
+                  } finally {
+                    setBusy(false);
+                  }
+                })()
+              }
+            >
+              Verify code
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={busy}
+              onClick={() =>
+                void (async () => {
+                  setBusy(true);
+                  setMessage(null);
+                  try {
+                    const result = await api("resend-verification", { method: "POST", body: "{}" });
+                    setVerificationSent(!result.alreadyVerified);
+                    setMessage(
+                      result.alreadyVerified
+                        ? "Your email is already verified."
+                        : "A new verification code was sent.",
+                    );
+                  } catch (value) {
+                    setMessage(
+                      value instanceof Error ? value.message : "Unable to send verification code.",
+                    );
+                  } finally {
+                    setBusy(false);
+                  }
+                })()
+              }
+            >
+              {verificationSent ? "Resend code" : "Send code"}
+            </Button>
+          </div>
         </div>
       )}
 

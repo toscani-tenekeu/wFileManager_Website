@@ -8,7 +8,7 @@ create table if not exists public.wfilemanager_pro_subscription_config (
   mailtrap_api_url text not null default 'https://send.api.mailtrap.io/api/send',
   mailtrap_from_email text not null default 'support@kmerhosting.com',
   mailtrap_from_name text not null default 'KmerHosting',
-  site_url text not null default 'https://wfilemanager.com',
+  site_url text not null default 'https://wfilemanager.kmerhosting.com',
   function_url text not null,
   support_email text not null default 'support@kmerhosting.com',
   price_usd numeric(10,2) not null default 50.00,

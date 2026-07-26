@@ -26,7 +26,8 @@ function passwordValid(password: string) {
 
 export function CustomerAuthActions() {
   const [resetToken, setResetToken] = useState("");
-  const [verificationToken, setVerificationToken] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [verificationSent, setVerificationSent] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
@@ -36,33 +37,7 @@ export function CustomerAuthActions() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setResetToken(params.get("reset") || "");
-    setVerificationToken(params.get("verify") || "");
   }, []);
-
-  useEffect(() => {
-    if (!verificationToken) return;
-    void (async () => {
-      setBusy(true);
-      try {
-        await securityApi("verify-email", { token: verificationToken });
-        setMessage("Email verified. You can continue using your customer account.");
-        window.history.replaceState({}, "", "/account");
-        setVerificationToken("");
-      } catch (value) {
-        setMessage(value instanceof Error ? value.message : "Email verification failed.");
-      } finally {
-        setBusy(false);
-      }
-    })();
-  }, [verificationToken]);
-
-  if (verificationToken) {
-    return (
-      <div className="card-surface p-6 text-sm text-muted-foreground">
-        {busy ? "Verifying your email…" : message || "Preparing email verification…"}
-      </div>
-    );
-  }
 
   if (resetToken) {
     const valid = passwordValid(password) && password === confirmation;
@@ -172,37 +147,76 @@ export function CustomerAuthActions() {
         <div>
           <h3 className="text-sm font-medium">Verify the signed-in email</h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            This sends a single-use verification link valid for 24 hours to the authenticated
-            customer.
+            A six-digit verification code is sent to the authenticated customer and expires after
+            15 minutes.
           </p>
-          <Button
-            className="mt-3"
-            type="button"
-            variant="outline"
-            disabled={busy}
-            onClick={() =>
-              void (async () => {
-                setBusy(true);
-                setMessage(null);
-                try {
-                  const result = await securityApi("resend-verification");
-                  setMessage(
-                    result.alreadyVerified
-                      ? "Your email is already verified."
-                      : "Verification email sent.",
-                  );
-                } catch (value) {
-                  setMessage(
-                    value instanceof Error ? value.message : "Unable to send verification email.",
-                  );
-                } finally {
-                  setBusy(false);
-                }
-              })()
-            }
-          >
-            Send verification email
-          </Button>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={busy}
+              onClick={() =>
+                void (async () => {
+                  setBusy(true);
+                  setMessage(null);
+                  try {
+                    const result = await securityApi("resend-verification");
+                    setVerificationSent(!result.alreadyVerified);
+                    setMessage(
+                      result.alreadyVerified
+                        ? "Your email is already verified."
+                        : "Verification code sent. Enter it below.",
+                    );
+                  } catch (value) {
+                    setMessage(
+                      value instanceof Error ? value.message : "Unable to send verification code.",
+                    );
+                  } finally {
+                    setBusy(false);
+                  }
+                })()
+              }
+            >
+              {verificationSent ? "Resend code" : "Send verification code"}
+            </Button>
+            {verificationSent && (
+              <>
+                <Input
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  placeholder="000000"
+                  value={verificationCode}
+                  onChange={(event) =>
+                    setVerificationCode(event.target.value.replace(/\D/g, "").slice(0, 6))
+                  }
+                  className="w-32 font-mono tracking-[0.2em]"
+                />
+                <Button
+                  type="button"
+                  disabled={busy || verificationCode.length !== 6}
+                  onClick={() =>
+                    void (async () => {
+                      setBusy(true);
+                      setMessage(null);
+                      try {
+                        await securityApi("verify-email", { code: verificationCode });
+                        setVerificationCode("");
+                        setVerificationSent(false);
+                        setMessage("Email verified. You can continue using your customer account.");
+                      } catch (value) {
+                        setMessage(value instanceof Error ? value.message : "Email verification failed.");
+                      } finally {
+                        setBusy(false);
+                      }
+                    })()
+                  }
+                >
+                  Verify code
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
       {message && (

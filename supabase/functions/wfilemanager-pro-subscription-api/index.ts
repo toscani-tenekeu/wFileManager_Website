@@ -15,8 +15,8 @@ const supabase = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_K
 });
 
 const encoder = new TextEncoder();
-const CAMERPAY_DASHBOARD_CALLBACK_URL = "https://kmerhosting.com/api/webhooks/camerpay";
-const CAMERPAY_DASHBOARD_RETURN_URL = "https://kmerhosting.com/payment/top-up/return";
+const CAMERPAY_DASHBOARD_CALLBACK_URL = "https://wfilemanager.kmerhosting.com/account";
+const CAMERPAY_DASHBOARD_RETURN_URL = "https://wfilemanager.kmerhosting.com/account";
 
 type SubscriptionConfig = {
   camerpayApiBaseUrl: string;
@@ -93,7 +93,7 @@ async function loadConfig(): Promise<SubscriptionConfig> {
     mailtrapApiUrl: String(data.mailtrap_api_url || "https://send.api.mailtrap.io/api/send"),
     mailtrapFromEmail: String(data.mailtrap_from_email || "support@kmerhosting.com"),
     mailtrapFromName: String(data.mailtrap_from_name || "KmerHosting"),
-    siteUrl: String(data.site_url || "https://wfilemanager.com").replace(/\/$/, ""),
+    siteUrl: String(data.site_url || "https://wfilemanager.kmerhosting.com").replace(/\/$/, ""),
     functionUrl: String(
       data.function_url || `${supabaseUrl}/functions/v1/wfilemanager-pro-subscription-api`,
     ).replace(/\/$/, ""),
