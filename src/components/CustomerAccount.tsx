@@ -600,7 +600,7 @@ export function CustomerAccount() {
               <button
                 type="button"
                 key={amount}
-                onClick={() => void addFunds(amount)}
+                onClick={() => setTopupAmount(String(amount))}
                 className="rounded border border-border px-3 py-1.5 text-xs"
               >
                 ${amount}
