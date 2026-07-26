@@ -466,6 +466,8 @@ export function CustomerAccount() {
         : /\S+@\S+\.\S+/.test(form.email) &&
           passwordValid(form.password) &&
           form.fullName.trim().length >= 2 &&
+          form.phoneCountryCode.trim().startsWith("+") &&
+          form.phoneNumber.trim().length > 0 &&
           form.country.trim().length >= 2 &&
           form.billingAddress.trim().length >= 4;
     return (
