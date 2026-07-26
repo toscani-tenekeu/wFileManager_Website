@@ -358,7 +358,9 @@ export function CustomerAccount() {
       return;
     }
     if (!/^2376\d{8}$/.test((dashboard?.customer.phone || "").replace(/\D/g, ""))) {
-      setMessage("Save a valid Cameroon mobile number in Billing details first (example: +237 690 00 00 00).");
+      setMessage(
+        "Save a valid Cameroon mobile number in Billing details first (example: +237 690 00 00 00).",
+      );
       return;
     }
     setBusy(true);
@@ -1019,7 +1021,12 @@ function Field({
   return (
     <div className="grid gap-1.5">
       <Label>{label}</Label>
-      <Input type={type} placeholder={placeholder} value={value} onChange={(event) => onChange(event.target.value)} />
+      <Input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
     </div>
   );
 }
