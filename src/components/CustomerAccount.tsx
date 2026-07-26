@@ -60,6 +60,8 @@ const emptyForm = {
   password: "",
   fullName: "",
   phone: "",
+  phoneCountryCode: "+",
+  phoneNumber: "",
   company: "",
   country: "",
   billingAddress: "",
@@ -161,6 +163,8 @@ export function CustomerAccount() {
       email: payload.customer.email || "",
       fullName: payload.customer.fullName || "",
       phone: payload.customer.phone || "",
+      phoneCountryCode: "+",
+      phoneNumber: payload.customer.phone || "",
       company: payload.customer.company || "",
       country: payload.customer.country || "",
       billingAddress: payload.customer.billingAddress || "",
@@ -519,10 +523,16 @@ export function CustomerAccount() {
               />
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field
-                  label="Phone"
-                  value={form.phone}
-                  onChange={(value) => setField("phone", value)}
-                  placeholder="+237 690 00 00 00"
+                  label="Country code"
+                  value={form.phoneCountryCode}
+                  onChange={(value) => setField("phoneCountryCode", value)}
+                  placeholder="+1"
+                />
+                <Field
+                  label="Phone number"
+                  value={form.phoneNumber}
+                  onChange={(value) => setField("phoneNumber", value)}
+                  placeholder="555 123 4567"
                 />
                 <Field
                   label="Company"
@@ -954,11 +964,19 @@ export function CustomerAccount() {
               value={form.fullName}
               onChange={(value) => setField("fullName", value)}
             />
-            <Field
-              label="Phone"
-              value={form.phone}
-              onChange={(value) => setField("phone", value)}
-            />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field
+                label="Country code"
+                value={form.phoneCountryCode}
+                onChange={(value) => setField("phoneCountryCode", value)}
+                placeholder="+1"
+              />
+              <Field
+                label="Phone number"
+                value={form.phoneNumber}
+                onChange={(value) => setField("phoneNumber", value)}
+              />
+            </div>
             <Field
               label="Company"
               value={form.company}
