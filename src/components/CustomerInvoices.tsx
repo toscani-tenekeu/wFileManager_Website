@@ -42,6 +42,8 @@ export function CustomerInvoices() {
       } else if (!silent) {
         setError(payload.error || "Unable to load invoices.");
       }
+    } catch (value) {
+      if (!silent) setError(value instanceof Error ? value.message : "Unable to load invoices.");
     } finally {
       if (!silent) setLoading(false);
     }
@@ -49,19 +51,24 @@ export function CustomerInvoices() {
 
   useEffect(() => {
     void load();
-    const timer = window.setInterval(() => void load(true), 15_000);
     const focus = () => void load(true);
+    const visibility = () => {
+      if (document.visibilityState === "visible") void load(true);
+    };
     window.addEventListener("focus", focus);
+    document.addEventListener("visibilitychange", visibility);
     return () => {
-      window.clearInterval(timer);
       window.removeEventListener("focus", focus);
+      document.removeEventListener("visibilitychange", visibility);
     };
   }, []);
 
   if (!available && !loading) return null;
 
   return (
-    <details className="card-surface p-6">
+    <details className="card-surface p-6" onToggle={(event) => {
+      if ((event.currentTarget as HTMLDetailsElement).open) void load(true);
+    }}>
       <summary className="cursor-pointer font-semibold">Invoices and receipts</summary>
       <div className="mt-5 divide-y divide-border">
         {error && (
@@ -70,7 +77,7 @@ export function CustomerInvoices() {
           </div>
         )}
         {loading ? (
-          <div className="py-4 text-sm text-muted-foreground">Preparing documents…</div>
+          <div className="py-4 text-sm text-muted-foreground">Loading documents…</div>
         ) : invoices.length === 0 ? (
           <div className="py-4 text-sm text-muted-foreground">No invoice yet.</div>
         ) : (
