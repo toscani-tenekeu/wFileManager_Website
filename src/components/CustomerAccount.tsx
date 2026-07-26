@@ -357,6 +357,10 @@ export function CustomerAccount() {
       setMessage("Enter at least $5.00 USD.");
       return;
     }
+    if (!/^2376\d{8}$/.test((dashboard?.customer.phone || "").replace(/\D/g, ""))) {
+      setMessage("Save a valid Cameroon mobile number in Billing details first (example: +237 690 00 00 00).");
+      return;
+    }
     setBusy(true);
     setMessage(null);
     try {
@@ -522,6 +526,7 @@ export function CustomerAccount() {
                   label="Phone"
                   value={form.phone}
                   onChange={(value) => setField("phone", value)}
+                  placeholder="+237 690 00 00 00"
                 />
                 <Field
                   label="Company"
@@ -1003,16 +1008,18 @@ function Field({
   value,
   onChange,
   type = "text",
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   type?: string;
+  placeholder?: string;
 }) {
   return (
     <div className="grid gap-1.5">
       <Label>{label}</Label>
-      <Input type={type} value={value} onChange={(event) => onChange(event.target.value)} />
+      <Input type={type} placeholder={placeholder} value={value} onChange={(event) => onChange(event.target.value)} />
     </div>
   );
 }
