@@ -523,7 +523,7 @@ export function CustomerAccount() {
                   label="Phone"
                   value={form.phone}
                   onChange={(value) => setField("phone", value)}
-                  placeholder="+1 202-555-0147"
+                  placeholder="+12025550147"
                 />
                 <Field
                   label="Company"
@@ -959,7 +959,7 @@ export function CustomerAccount() {
               label="Phone"
               value={form.phone}
               onChange={(value) => setField("phone", value)}
-              placeholder="+1 202-555-0147"
+              placeholder="+12025550147"
             />
             <Field
               label="Company"
