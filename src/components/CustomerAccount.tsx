@@ -721,7 +721,7 @@ export function CustomerAccount() {
             {formatUsd(dashboard.plan.priceUsd)} / year
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            One instance · 5 GB managed storage · 20 GB remote backup traffic each month.
+            One instance · 5 GB managed storage · 20 GB monthly transfer traffic.
           </p>
           <div className="mt-5 grid gap-2 sm:grid-cols-2">
             <Button

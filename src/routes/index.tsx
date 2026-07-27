@@ -377,7 +377,7 @@ function DatabaseModes() {
               <Bullet>Managed users, roles, sessions, authentication and settings</Bullet>
               <Bullet>Automatic backups of application records</Bullet>
               <Bullet>Restore application data after a server reinstall</Bullet>
-              <Bullet>20 GB remote backup traffic per month</Bullet>
+              <Bullet>20 GB monthly transfer traffic</Bullet>
               <Bullet>Additional storage at $1 USD per GB per month</Bullet>
             </ul>
           </div>

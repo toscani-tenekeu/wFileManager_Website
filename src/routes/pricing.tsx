@@ -81,7 +81,7 @@ function PricingPage() {
                 <Feature>Managed users, roles, sessions and recovery</Feature>
                 <Feature>Encrypted backups of selected folders</Feature>
                 <Feature>7 daily, 4 weekly and 6 monthly snapshots</Feature>
-                <Feature>20 GB remote backup traffic each month</Feature>
+                <Feature>20 GB monthly transfer traffic</Feature>
                 <Feature>$1 USD per extra GB each month</Feature>
                 <Feature>Safe restore, alerting and advanced sharing</Feature>
               </ul>
@@ -106,13 +106,13 @@ function PricingPage() {
               <h2 className="text-sm font-semibold text-foreground">Clear limits</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 Pro backs up only folders explicitly selected in the app. System paths and unsafe
-                links are refused. A single uploaded or backed-up file can be up to 20 GB.
+                links are refused. A single uploaded or backed-up file can be up to 5 GB.
               </p>
             </div>
           </div>
 
           <div className="mx-auto mt-6 max-w-4xl rounded-lg border border-border bg-[var(--surface-1)] p-5 text-center text-sm text-muted-foreground">
-            Pro costs $100 USD per instance per year and includes 5 GB of managed storage plus 20 GB
+            Pro costs $100 USD per instance per year and includes 5 GB of managed storage plus 20 GB monthly transfer traffic.
             of remote backup traffic per month. The customer account supports a USD balance, direct
             payment, payment-status checks and automatic renewal. Read the{" "}
             <a href="/terms" className="font-medium brand-text hover:underline">

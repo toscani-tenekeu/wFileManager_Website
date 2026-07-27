@@ -56,7 +56,7 @@ const sections = [
   {
     title: "Pro backups",
     body: [
-      "Pro includes 5 GB of managed storage and 20 GB of remote backup traffic per monthly cycle. Extra capacity costs $1 per GB per month.",
+      "Pro includes 5 GB of managed storage and 20 GB monthly transfer traffic. Transfer overage is billed marginally: $1/GB through 50 GB, $0.75/GB through 200 GB, then $0.25/GB.",
       "Select only the server folders you want to protect. wFileManager rejects protected system locations and unsafe links before a backup starts.",
       "Snapshots are encrypted, verified after upload and retained as 7 daily, 4 weekly and 6 monthly copies. A remote restore always uses a new safe folder.",
     ],
