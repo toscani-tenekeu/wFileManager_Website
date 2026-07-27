@@ -369,15 +369,16 @@ function DatabaseModes() {
               </span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Pro costs $50 USD per instance per year and stores wFileManager application records in
-              managed infrastructure with automatic backups and recovery tools. Each instance
+              Pro costs $100 USD per instance per year and adds 5 GB of managed remote storage,
+              encrypted folder backups, recovery and operational alerts. Each instance
               includes 100&nbsp;MB.
             </p>
             <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
               <Bullet>Managed users, roles, sessions, authentication and settings</Bullet>
               <Bullet>Automatic backups of application records</Bullet>
               <Bullet>Restore application data after a server reinstall</Bullet>
-              <Bullet>Additional 100 MB for $1 USD per year</Bullet>
+              <Bullet>20 GB remote backup traffic per month</Bullet>
+              <Bullet>Additional storage at $1 USD per GB per month</Bullet>
             </ul>
           </div>
         </div>

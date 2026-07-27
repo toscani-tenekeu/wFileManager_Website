@@ -45,8 +45,8 @@ function TermsPage() {
                 </li>
                 <li>
                   <strong>Pro:</strong> paid managed application data for wFileManager records,
-                  priced at $50 USD per instance per year with 100 MB included and $1 USD per
-                  additional 100 MB per year.
+                  priced at $100 USD per instance per year with 5 GB included. Additional capacity
+                  costs $1 USD per GB per month.
                 </li>
               </ul>
               <p>

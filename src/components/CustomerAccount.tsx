@@ -427,18 +427,18 @@ export function CustomerAccount() {
   const upgradeQuota = async (order: LicenceOrder, paymentMode: "balance" | "direct") => {
     if (!order.keyInstanceKey) return;
     const current = Number(
-      order.storageQuotaBytes || dashboard?.plan.storageQuotaBytes || 104857600,
+      order.storageQuotaBytes || dashboard?.plan.storageQuotaBytes || 5368709120,
     );
-    const targetMb = Number(
-      quotaTargets[order.keyInstanceKey] || Math.ceil(current / 1048576) + 100,
+    const targetGb = Number(
+      quotaTargets[order.keyInstanceKey] || Math.ceil(current / 1073741824) + 1,
     );
-    const targetQuotaBytes = targetMb * 1048576;
+    const targetQuotaBytes = targetGb * 1073741824;
     if (
       !Number.isSafeInteger(targetQuotaBytes) ||
       targetQuotaBytes <= current ||
-      (targetQuotaBytes - current) % 104857600 !== 0
+      (targetQuotaBytes - current) % 1073741824 !== 0
     ) {
-      setMessage("Choose a quota greater than the current quota, in 100 MB increments.");
+      setMessage("Choose a quota greater than the current quota, in 1 GB increments.");
       return;
     }
     setBusy(true);
@@ -721,7 +721,7 @@ export function CustomerAccount() {
             {formatUsd(dashboard.plan.priceUsd)} / year
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            One instance · 100 MB managed application data.
+            One instance · 5 GB managed storage · 20 GB remote backup traffic each month.
           </p>
           <div className="mt-5 grid gap-2 sm:grid-cols-2">
             <Button
@@ -856,7 +856,7 @@ export function CustomerAccount() {
                             {formatBytes(
                               order.storageQuotaBytes || dashboard.plan.storageQuotaBytes,
                             )}{" "}
-                            · $1 per additional 100 MB
+                            · $1 per additional GB per month
                           </div>
                           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
                             <Input
@@ -864,16 +864,16 @@ export function CustomerAccount() {
                               min={
                                 Math.ceil(
                                   (order.storageQuotaBytes || dashboard.plan.storageQuotaBytes) /
-                                    1048576,
-                                ) + 100
+                                    1073741824,
+                                ) + 1
                               }
                               step="100"
                               value={
                                 quotaTargets[order.keyInstanceKey] ||
                                 Math.ceil(
                                   (order.storageQuotaBytes || dashboard.plan.storageQuotaBytes) /
-                                    1048576,
-                                ) + 100
+                                    1073741824,
+                                ) + 1
                               }
                               onChange={(event) =>
                                 setQuotaTargets((current) => ({
@@ -882,7 +882,7 @@ export function CustomerAccount() {
                                 }))
                               }
                             />
-                            <span className="text-xs text-muted-foreground">MB target</span>
+                            <span className="text-xs text-muted-foreground">GB target</span>
                             <Button
                               type="button"
                               onClick={() => void upgradeQuota(order, "balance")}
@@ -891,11 +891,11 @@ export function CustomerAccount() {
                                 dashboard.wallet.balanceUsd <
                                   Math.max(
                                     1,
-                                    (Number(quotaTargets[order.keyInstanceKey]) * 1048576 -
+                                    (Number(quotaTargets[order.keyInstanceKey]) * 1073741824 -
                                       Number(
                                         order.storageQuotaBytes || dashboard.plan.storageQuotaBytes,
                                       )) /
-                                      104857600,
+                                      1073741824,
                                   )
                               }
                             >

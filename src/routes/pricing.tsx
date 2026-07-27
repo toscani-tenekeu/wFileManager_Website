@@ -9,7 +9,7 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "Choose Community for free SQLite storage on your server, or buy a wFileManager Pro licence key for managed application data.",
+          "Community is free local administration. Pro adds managed recovery, encrypted remote backups and 5 GB of storage.",
       },
     ],
   }),
@@ -29,9 +29,8 @@ function PricingPage() {
               Choose your wFileManager edition
             </h1>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-              Both editions include the same file-manager features. The difference is where
-              wFileManager stores its own application records and who is responsible for backup,
-              recovery and licence billing.
+              Community is complete local administration. Pro adds managed storage, encrypted remote
+              backups, safe restore and operational alerts.
             </p>
           </div>
 
@@ -70,22 +69,21 @@ function PricingPage() {
               <Ribbon accent>Paid licence key</Ribbon>
               <h2 className="pr-20 text-xl font-semibold">Pro</h2>
               <div className="mt-7 flex items-end gap-2">
-                <span className="text-5xl font-semibold tracking-tight">$50</span>
+                <span className="text-5xl font-semibold tracking-tight">$100</span>
                 <span className="pb-1 text-sm text-muted-foreground">USD / year</span>
               </div>
-              <p className="mt-2 text-sm font-medium brand-text">Per instance · 100 MB included</p>
+              <p className="mt-2 text-sm font-medium brand-text">Per instance · 5 GB included</p>
               <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                Pro stores wFileManager application records in managed infrastructure with backups,
-                recovery metadata and support for server reinstall or replacement. A paid licence
-                key is required before first setup.
+                Pro keeps application data protected off-server and adds encrypted backups for
+                folders you select. A paid licence key is required before first setup.
               </p>
               <ul className="mt-7 space-y-3 pb-8 text-sm text-muted-foreground">
-                <Feature>All wFileManager features</Feature>
-                <Feature>Managed users, roles, sessions and authentication records</Feature>
-                <Feature>Automatic backups of wFileManager application data</Feature>
-                <Feature>Recovery Kit reconnects a replacement installation</Feature>
-                <Feature>100 MB included, then $1 USD/year per additional 100 MB</Feature>
-                <Feature>Priority technical support</Feature>
+                <Feature>Managed users, roles, sessions and recovery</Feature>
+                <Feature>Encrypted backups of selected folders</Feature>
+                <Feature>7 daily, 4 weekly and 6 monthly snapshots</Feature>
+                <Feature>20 GB remote backup traffic each month</Feature>
+                <Feature>$1 USD per extra GB each month</Feature>
+                <Feature>Safe restore, alerting and advanced sharing</Feature>
               </ul>
               <a
                 href="/account"
@@ -98,27 +96,25 @@ function PricingPage() {
 
           <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-2">
             <div className="rounded-lg border border-border bg-[var(--surface-1)] p-6">
-              <h2 className="text-sm font-semibold text-foreground">What Pro stores</h2>
+              <h2 className="text-sm font-semibold text-foreground">What Pro protects</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Pro covers records used by wFileManager itself: application users, roles, sessions,
-                authentication records, notifications, settings, backup metadata and recovery
-                metadata.
+                Application users, roles, sessions, settings and encrypted snapshots of folders
+                selected by an administrator.
               </p>
             </div>
             <div className="rounded-lg border border-border bg-[var(--surface-1)] p-6">
-              <h2 className="text-sm font-semibold text-foreground">What neither edition stores</h2>
+              <h2 className="text-sm font-semibold text-foreground">Clear limits</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                wFileManager does not store or back up your server filesystem files, websites,
-                databases, uploads or directories. Those remain on your server and require a
-                separate backup policy.
+                Pro backs up only folders explicitly selected in the app. System paths and unsafe
+                links are refused. A single uploaded or backed-up file can be up to 20 GB.
               </p>
             </div>
           </div>
 
           <div className="mx-auto mt-6 max-w-4xl rounded-lg border border-border bg-[var(--surface-1)] p-5 text-center text-sm text-muted-foreground">
-            Pro costs $50 USD per instance per year and includes 100 MB of managed application
-            storage. The customer account supports a USD balance, account top-ups, balance or direct
-            payment, payment-status checks and automatic renewal from available balance. Read the{" "}
+            Pro costs $100 USD per instance per year and includes 5 GB of managed storage plus 20 GB
+            of remote backup traffic per month. The customer account supports a USD balance, direct
+            payment, payment-status checks and automatic renewal. Read the{" "}
             <a href="/terms" className="font-medium brand-text hover:underline">
               Terms of Use
             </a>{" "}
