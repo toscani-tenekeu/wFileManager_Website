@@ -6,7 +6,7 @@ export const Route = createFileRoute("/")({
 });
 
 const GITHUB = "https://github.com/toscani-tenekeu/wFileManager";
-const DOCS = "https://kmerhosting.com/docs";
+const DOCS = "/docs";
 const INSTALL_CMD =
   "curl -fsSL https://igihzeyfgwhnuiflamvn.supabase.co/storage/v1/object/public/releases.kmerhosting.com/wfilemanager/install.sh | sudo bash";
 const UNINSTALL_CMD =

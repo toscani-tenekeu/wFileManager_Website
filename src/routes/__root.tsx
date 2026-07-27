@@ -14,7 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 const GITHUB = "https://github.com/toscani-tenekeu/wFileManager";
-const DOCS = "https://kmerhosting.com/docs";
+const DOCS = "/docs";
 const UNINSTALL_CMD =
   "curl -fsSL https://igihzeyfgwhnuiflamvn.supabase.co/storage/v1/object/public/releases.kmerhosting.com/wfilemanager/uninstall.sh | sudo bash";
 

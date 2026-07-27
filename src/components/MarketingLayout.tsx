@@ -1,7 +1,7 @@
 import * as React from "react";
 
 const GITHUB = "https://github.com/toscani-tenekeu/wFileManager";
-const DOCS = "https://kmerhosting.com/docs";
+const DOCS = "/docs";
 
 type ThemePreference = "system" | "light" | "dark";
 type IconProps = { className?: string };
