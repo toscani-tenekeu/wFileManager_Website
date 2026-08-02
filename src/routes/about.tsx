@@ -49,8 +49,8 @@ function AboutPage() {
                 description="Privileged operations are protected by application roles, current-password verification, guarded archive handling and hardened filesystem rules."
               />
               <AboutCard
-                title="Local by design"
-                description="Application accounts, roles, sessions and settings stay in SQLite on the server you administer."
+                title="Open source throughout"
+                description="The complete application is MIT licensed, auditable and available from the public GitHub repository."
               />
             </div>
 

@@ -5,7 +5,7 @@ export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
       { title: "Terms of Use - wFileManager" },
-      { name: "description", content: "Terms for the free wFileManager Community software." },
+      { name: "description", content: "Terms for the open source wFileManager software." },
     ],
   }),
   component: TermsPage,
@@ -23,17 +23,14 @@ function TermsPage() {
           <p className="mt-4 text-xs text-muted-foreground">Last updated: 2026-08-02</p>
 
           <div className="mt-10 space-y-6">
-            <TermSection title="1. Community software">
-              <p>
-                wFileManager is free, MIT-licensed software. It stores its application records in a
-                local SQLite database on the server where it is installed.
-              </p>
+            <TermSection title="1. Open source software">
+              <p>wFileManager is free, open source software distributed under the MIT License.</p>
             </TermSection>
             <TermSection title="2. Operator responsibility">
               <p>
                 The server administrator is responsible for access control, filesystem operations,
-                SQLite backups, restores, migrations, local disk capacity and compliance with
-                applicable laws and third-party licences.
+                backups, restores, local disk capacity and compliance with applicable laws and
+                third-party licences.
               </p>
               <p>
                 wFileManager can operate with elevated privileges. Incorrect paths or commands can
@@ -42,9 +39,8 @@ function TermsPage() {
             </TermSection>
             <TermSection title="3. Uninstalling">
               <p>
-                Uninstalling removes the application, its local SQLite records and its
-                configuration. The uninstaller can keep system packages that were installed as
-                prerequisites.
+                Uninstalling removes the application, its records and its configuration. The
+                uninstaller can keep system packages that were installed as prerequisites.
               </p>
             </TermSection>
             <TermSection title="4. Availability and support">

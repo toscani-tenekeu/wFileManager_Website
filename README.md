@@ -4,13 +4,8 @@ Official website for [wFileManager](https://github.com/toscani-tenekeu/wFileMana
 
 wFileManager supports KVM virtual machines, bare-metal servers and LXC containers with systemd and root access.
 
-## Editions
-
-- **Community:** free forever, SQLite on your server, self-managed application records and backups.
-- **Pro:** $50 USD per instance per year, managed application records, automatic backups, recovery tools and 100 MB included.
-- Additional Pro storage costs $1 USD per 100 MB per year.
-
-Managed application data covers wFileManager users, roles, sessions, authentication records, notifications and settings. Files displayed by wFileManager remain on your server and require a separate backup strategy.
+wFileManager is fully open source and distributed under the MIT License. There are no fees, licence
+keys or hosted application-data services.
 
 Support: support@kmerhosting.com
 

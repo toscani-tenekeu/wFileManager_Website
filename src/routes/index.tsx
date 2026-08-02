@@ -20,7 +20,6 @@ function Index() {
       <LogosStrip />
       <Features />
       <Screenshots />
-      <DatabaseModes />
       <Security />
       <Terminal />
       <Install />
@@ -44,8 +43,8 @@ function Nav() {
           <a href="#features" className="hover:text-foreground">
             Features
           </a>
-          <a href="/pricing" className="hover:text-foreground">
-            Community
+          <a href="#install" className="hover:text-foreground">
+            Install
           </a>
           <a href={DOCS} className="hover:text-foreground">
             Docs
@@ -287,7 +286,7 @@ function Features() {
     {
       icon: BellIcon,
       title: "Sessions, notifications, presence",
-      desc: "Live session control with notifications and presence, stored locally in SQLite.",
+      desc: "Live session control with notifications and presence under administrator control.",
     },
     {
       icon: RefreshIcon,
@@ -327,44 +326,6 @@ function Features() {
   );
 }
 
-/* ---------------- DATABASE MODES ---------------- */
-function DatabaseModes() {
-  return (
-    <section id="database" className="border-b border-border bg-[var(--surface-1)]/30">
-      <div className="mx-auto max-w-6xl px-4 py-24">
-        <SectionHeader
-          kicker="Database"
-          title="Application data stays on your server"
-          desc="wFileManager keeps accounts, roles, sessions, notifications and settings in a local SQLite database."
-        />
-        <div className="mx-auto mt-14 max-w-3xl">
-          <div className="card-surface p-8">
-            <div className="flex items-center gap-3">
-              <DbIcon className="h-5 w-5 brand-text" />
-              <h3 className="text-base font-semibold">SQLite on your server</h3>
-              <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                Community
-              </span>
-            </div>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Community is free and stores all wFileManager application records locally. You manage
-              the SQLite database, backups, restores, migrations and maintenance.
-            </p>
-            <div className="mt-5">
-              <CodeBlock code={"/var/lib/wfilemanager/wfilemanager.db"} />
-            </div>
-            <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
-              <Bullet>No licence, payment or subscription required</Bullet>
-              <Bullet>Application records remain on your server</Bullet>
-              <Bullet>Self-managed backups and recovery</Bullet>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ---------------- SECURITY ---------------- */
 function Security() {
   const rows = [
@@ -380,7 +341,10 @@ function Security() {
       "Entry count, expanded size, ratio and free space are all checked.",
     ],
     ["Verified releases", "Size and SHA‑256 are validated before atomic activation."],
-    ["Local application data", "Accounts and settings remain in the server SQLite database."],
+    [
+      "Private application state",
+      "Accounts and settings are never sent to a hosted wFileManager backend.",
+    ],
     ["0600 permissions on secrets", "Local administrator recovery material is locked to root."],
   ];
   return (
@@ -441,7 +405,7 @@ function Terminal() {
             </Line>
             <Line dim> Docs: https://github.com/toscani-tenekeu/wFileManager</Line>
             <Line prompt>curl -fsS http://127.0.0.1:1973/api/health</Line>
-            <Line dim>{`{ "status": "ok", "db": "sqlite", "release": "current" }`}</Line>
+            <Line dim>{`{ "status": "ok", "release": "current" }`}</Line>
             <Line prompt>journalctl -u wfilemanager.service -f</Line>
             <Line dim>info heartbeat sent · 200 OK · 84ms</Line>
             <Line dim>info session opened · admin · 10.0.0.4</Line>
@@ -557,8 +521,8 @@ function Recovery() {
         <div className="mx-auto max-w-2xl">
           <SectionHeader
             kicker="Backups"
-            title="Include local application data in your server policy"
-            desc="Back up the SQLite database with your other server state and verify that it can be restored before an incident."
+            title="Include application state in your backup policy"
+            desc="Back up wFileManager state with the rest of your server and verify that it can be restored before an incident."
           />
           <div className="mt-6 space-y-3">
             <CodeBlock code="/var/lib/wfilemanager/wfilemanager.db" />

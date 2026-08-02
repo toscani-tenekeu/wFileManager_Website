@@ -171,8 +171,8 @@ function SiteNav() {
           <a href="/#features" className="hover:text-foreground">
             Features
           </a>
-          <a href="/pricing" className="hover:text-foreground">
-            Community
+          <a href="/#install" className="hover:text-foreground">
+            Install
           </a>
           <a href={DOCS} className="hover:text-foreground">
             Docs

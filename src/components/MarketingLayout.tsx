@@ -138,8 +138,8 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
             <a href="/#features" className="hover:text-foreground">
               Features
             </a>
-            <a href="/pricing" className="hover:text-foreground">
-              Community
+            <a href="/#install" className="hover:text-foreground">
+              Install
             </a>
             <a href={DOCS} className="hover:text-foreground">
               Docs
@@ -170,8 +170,8 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
             <span className="text-foreground">wFileManager</span> · A project by KmerHosting LLC
           </span>
           <div className="flex items-center gap-6">
-            <a href="/pricing" className="hover:text-foreground">
-              Community
+            <a href="/docs" className="hover:text-foreground">
+              Docs
             </a>
             <a href={GITHUB} target="_blank" rel="noreferrer" className="hover:text-foreground">
               GitHub
