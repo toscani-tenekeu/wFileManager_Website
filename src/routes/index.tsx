@@ -939,31 +939,40 @@ function ThemeToggle() {
 }
 
 /* ---------------- SCREENSHOTS ---------------- */
-const SCREENSHOTS: { title: string; desc: string; ratio: string }[] = [
+const SCREENSHOTS: { title: string; desc: string; image?: string }[] = [
   {
+    image: "/screenshots/overview.png",
+    title: "Server overview",
+    desc: "Filesystem access, transfer limits and server status at a glance.",
+  },
+  {
+    image: "/screenshots/file-explorer.png",
     title: "File explorer",
     desc: "Real filesystem browsing with multi‑select, copy, move, rename and delete.",
-    ratio: "aspect-[16/10]",
   },
   {
+    image: "/screenshots/root-terminal.png",
     title: "Root PTY terminal",
     desc: "Administrator‑only terminal, gated by current‑password verification.",
-    ratio: "aspect-[16/10]",
   },
   {
+    image: "/screenshots/users.png",
     title: "Users, roles & sessions",
     desc: "Application accounts, permissions and live session control.",
-    ratio: "aspect-[16/10]",
+  },
+  {
+    image: "/screenshots/roles-permissions.png",
+    title: "Roles & permissions",
+    desc: "Fine-grained access controls for browsing, editing, transfers and archives.",
+  },
+  {
+    image: "/screenshots/notifications.png",
+    title: "Notifications",
+    desc: "Persistent activity notifications for important account and file events.",
   },
   {
     title: "Setup wizard",
-    desc: "Guided installation: domain, data mode and first administrator.",
-    ratio: "aspect-[16/10]",
-  },
-  {
-    title: "Notifications & updates",
-    desc: "Verified releases, health checks and in‑app notifications.",
-    ratio: "aspect-[16/10]",
+    desc: "Screenshot coming soon.",
   },
 ];
 
@@ -977,11 +986,11 @@ function Screenshots() {
           desc="Explore the main file-management and administration interfaces."
         />
         <div className="mt-14 grid gap-6 md:grid-cols-2">
-          {SCREENSHOTS.slice(0, 1).map((s, i) => (
-            <ScreenshotSlot key={s.title} index={i + 1} {...s} className="md:col-span-2" />
+          {SCREENSHOTS.slice(0, 1).map((s) => (
+            <ScreenshotSlot key={s.title} {...s} className="md:col-span-2" />
           ))}
-          {SCREENSHOTS.slice(1).map((s, i) => (
-            <ScreenshotSlot key={s.title} index={i + 2} {...s} />
+          {SCREENSHOTS.slice(1).map((s) => (
+            <ScreenshotSlot key={s.title} {...s} />
           ))}
         </div>
       </div>
@@ -990,33 +999,42 @@ function Screenshots() {
 }
 
 function ScreenshotSlot({
-  index,
   title,
   desc,
-  ratio,
+  image,
   className = "",
 }: {
-  index: number;
   title: string;
   desc: string;
-  ratio: string;
+  image?: string;
   className?: string;
 }) {
   return (
     <figure className={`card-surface overflow-hidden ${className}`}>
-      <div
-        className={`${ratio} relative flex items-center justify-center border-b border-dashed border-border bg-[var(--surface-2)]`}
-      >
-        <div className="grid-bg absolute inset-0 opacity-60" aria-hidden />
-        <div className="relative text-center">
-          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-md border border-border bg-background">
-            <ImageIcon className="h-4 w-4 brand-text" />
-          </div>
-          <div className="mt-3 text-xs font-medium text-muted-foreground">
-            Interface preview {index}
-          </div>
-          <div className="mt-1 font-mono text-[10px] text-muted-foreground/70">wFileManager</div>
-        </div>
+      <div className="relative flex aspect-[2/1] items-center justify-center overflow-hidden border-b border-border bg-[#090b0d]">
+        {image ? (
+          <img
+            src={image}
+            alt={`${title} interface in wFileManager`}
+            className="h-full w-full object-contain object-top"
+            loading="lazy"
+          />
+        ) : (
+          <>
+            <div className="grid-bg absolute inset-0 opacity-60" aria-hidden />
+            <div className="relative text-center">
+              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-md border border-border bg-background">
+                <ImageIcon className="h-4 w-4 brand-text" />
+              </div>
+              <div className="mt-3 text-xs font-medium text-muted-foreground">
+                Setup preview reserved
+              </div>
+              <div className="mt-1 font-mono text-[10px] text-muted-foreground/70">
+                wFileManager
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <figcaption className="p-5">
         <div className="text-sm font-semibold text-foreground">{title}</div>

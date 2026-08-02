@@ -99,7 +99,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Web file explorer, guarded archives, trash, users & roles, notifications, verified updates and an administrator-only Linux terminal.",
       },
       { property: "og:type", content: "website" },
+      {
+        property: "og:image",
+        content: "https://wfilemanager.kmerhosting.com/og-image.png",
+      },
       { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "twitter:image",
+        content: "https://wfilemanager.kmerhosting.com/og-image.png",
+      },
     ],
     links: [
       {
