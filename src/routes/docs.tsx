@@ -12,7 +12,7 @@ const sections = [
     body: [
       "Install wFileManager on a supported Ubuntu server using the official installer, then open /setup to create the first administrator.",
       "The administrator account is an application account. It does not create a Linux user.",
-      "Application data is stored in /var/lib/wfilemanager/wfilemanager.db. Include it in your server backup policy.",
+      "Application state is stored under /var/lib/wfilemanager. Include it in your server backup policy.",
     ],
   },
   {
@@ -56,7 +56,7 @@ const sections = [
   {
     title: "Backups",
     body: [
-      "Back up /var/lib/wfilemanager/wfilemanager.db with the rest of your server state.",
+      "Back up /var/lib/wfilemanager with the rest of your server state.",
       "Test restore procedures before relying on them and keep copies outside the server.",
       "Server files, websites and databases require their own backup policy.",
     ],
@@ -65,7 +65,7 @@ const sections = [
     title: "Updates and recovery",
     body: [
       "Stable updates are downloaded, checked by checksum and size, built in a separate release, health-checked and rolled back automatically if unhealthy.",
-      "After a server replacement, restore the local SQLite database from your tested backup.",
+      "After a server replacement, restore the application state from your tested backup.",
       "Never expose the internal Node port. Access wFileManager through HTTPS and Nginx.",
     ],
   },

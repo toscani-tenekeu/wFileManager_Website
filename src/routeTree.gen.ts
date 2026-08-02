@@ -10,31 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as DocsRouteImport } from './routes/docs'
-import { Route as AccountRouteImport } from './routes/account'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiCustomerRouteImport } from './routes/api.customer'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DocsRoute = DocsRouteImport.update({
   id: '/docs',
   path: '/docs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccountRoute = AccountRouteImport.update({
-  id: '/account',
-  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -47,78 +34,39 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiCustomerRoute = ApiCustomerRouteImport.update({
-  id: '/api/customer',
-  path: '/api/customer',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/account': typeof AccountRoute
   '/docs': typeof DocsRoute
-  '/pricing': typeof PricingRoute
   '/terms': typeof TermsRoute
-  '/api/customer': typeof ApiCustomerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/account': typeof AccountRoute
   '/docs': typeof DocsRoute
-  '/pricing': typeof PricingRoute
   '/terms': typeof TermsRoute
-  '/api/customer': typeof ApiCustomerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/account': typeof AccountRoute
   '/docs': typeof DocsRoute
-  '/pricing': typeof PricingRoute
   '/terms': typeof TermsRoute
-  '/api/customer': typeof ApiCustomerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/about'
-    | '/account'
-    | '/docs'
-    | '/pricing'
-    | '/terms'
-    | '/api/customer'
+  fullPaths: '/' | '/about' | '/docs' | '/terms'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/account'
-    | '/docs'
-    | '/pricing'
-    | '/terms'
-    | '/api/customer'
-  id:
-    | '__root__'
-    | '/'
-    | '/about'
-    | '/account'
-    | '/docs'
-    | '/pricing'
-    | '/terms'
-    | '/api/customer'
+  to: '/' | '/about' | '/docs' | '/terms'
+  id: '__root__' | '/' | '/about' | '/docs' | '/terms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AccountRoute: typeof AccountRoute
   DocsRoute: typeof DocsRoute
-  PricingRoute: typeof PricingRoute
   TermsRoute: typeof TermsRoute
-  ApiCustomerRoute: typeof ApiCustomerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -130,25 +78,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/docs': {
       id: '/docs'
       path: '/docs'
       fullPath: '/docs'
       preLoaderRoute: typeof DocsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -165,24 +99,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/customer': {
-      id: '/api/customer'
-      path: '/api/customer'
-      fullPath: '/api/customer'
-      preLoaderRoute: typeof ApiCustomerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AccountRoute: AccountRoute,
   DocsRoute: DocsRoute,
-  PricingRoute: PricingRoute,
   TermsRoute: TermsRoute,
-  ApiCustomerRoute: ApiCustomerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
