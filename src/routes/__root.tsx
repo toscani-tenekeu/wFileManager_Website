@@ -7,7 +7,6 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { createPortal } from "react-dom";
 import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
@@ -15,9 +14,6 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 
 const GITHUB = "https://github.com/toscani-tenekeu/wFileManager";
 const DOCS = "/docs";
-const UNINSTALL_CMD =
-  "curl -fsSL https://igihzeyfgwhnuiflamvn.supabase.co/storage/v1/object/public/releases.kmerhosting.com/wfilemanager/uninstall.sh | sudo bash";
-
 type IconProps = { className?: string };
 type ThemeMode = "system" | "light" | "dark";
 
@@ -154,7 +150,6 @@ function RootComponent() {
       <div className="site-outlet">
         <Outlet />
       </div>
-      <HomeAdminCommandEnhancer />
       <SiteFooter />
     </QueryClientProvider>
   );
@@ -257,114 +252,6 @@ function ThemeSelector() {
           <Icon className="h-3.5 w-3.5" />
         </button>
       ))}
-    </div>
-  );
-}
-
-function enhanceAdminCommands(target: Element) {
-  target.className = "mx-auto mt-12 max-w-3xl divide-y divide-border border-y border-border";
-
-  Array.from(target.children).forEach((child) => {
-    if (!(child instanceof HTMLElement) || child.dataset.copyEnhanced === "true") return;
-
-    const label = child.querySelector("div")?.textContent?.trim() || "Command";
-    const code = child.querySelector("code")?.textContent?.trim() || "";
-    if (!code) return;
-
-    child.dataset.copyEnhanced = "true";
-    child.className = "flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between";
-
-    const labelEl = child.querySelector("div");
-    if (labelEl) labelEl.className = "text-[11px] uppercase tracking-wider text-muted-foreground";
-
-    const pre = child.querySelector("pre");
-    if (pre)
-      pre.className =
-        "mt-1 overflow-x-auto bg-transparent p-0 font-mono text-[12px] leading-relaxed text-foreground";
-
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = "Copy";
-    button.dataset.copyButton = "true";
-    button.className =
-      "btn-ghost btn-ghost-hover inline-flex shrink-0 items-center justify-center rounded-md px-2.5 py-1.5 text-[11px] font-medium";
-    button.setAttribute("aria-label", `Copy ${label} command`);
-    button.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(code);
-        button.textContent = "Copied";
-        window.setTimeout(() => {
-          button.textContent = "Copy";
-        }, 1500);
-      } catch {
-        button.textContent = "Copy failed";
-        window.setTimeout(() => {
-          button.textContent = "Copy";
-        }, 1500);
-      }
-    });
-    child.appendChild(button);
-  });
-}
-
-function HomeAdminCommandEnhancer() {
-  const [target, setTarget] = useState<Element | null>(null);
-
-  useEffect(() => {
-    if (window.location.pathname !== "/") return;
-
-    const locateTarget = () => {
-      const found = document.querySelector("#admin .space-y-3, #admin .divide-y");
-      if (!found) return;
-      enhanceAdminCommands(found);
-      setTarget(found);
-    };
-
-    locateTarget();
-    const frame = window.requestAnimationFrame(locateTarget);
-    const timer = window.setInterval(locateTarget, 500);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.clearInterval(timer);
-    };
-  }, []);
-
-  if (!target) return null;
-
-  return createPortal(
-    <ShellCommandRow label="Uninstall wFileManager" cmd={UNINSTALL_CMD} />,
-    target,
-  );
-}
-
-function ShellCommandRow({ label, cmd }: { label: string; cmd: string }) {
-  const [copied, setCopied] = useState(false);
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(cmd);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
-    } catch {
-      setCopied(false);
-    }
-  };
-
-  return (
-    <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="min-w-0">
-        <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
-        <code className="mt-1 block overflow-x-auto whitespace-nowrap font-mono text-[12px] leading-relaxed text-foreground">
-          {cmd}
-        </code>
-      </div>
-      <button
-        type="button"
-        onClick={copy}
-        className="btn-ghost btn-ghost-hover inline-flex shrink-0 items-center justify-center rounded-md px-2.5 py-1.5 text-[11px] font-medium"
-        aria-label={`Copy ${label} command`}
-      >
-        {copied ? "Copied" : "Copy"}
-      </button>
     </div>
   );
 }

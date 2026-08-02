@@ -1,4 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  Activity,
+  Check,
+  Clipboard,
+  FileText,
+  HeartPulse,
+  KeyRound,
+  RefreshCw,
+  RotateCcw,
+  Server,
+  Trash2,
+  type LucideIcon,
+} from "lucide-react";
 import * as React from "react";
 
 export const Route = createFileRoute("/")({
@@ -480,35 +493,157 @@ function Install() {
 
 /* ---------------- ADMIN ---------------- */
 function AdminCommands() {
-  const cmds = [
-    ["Service status", "sudo systemctl status wfilemanager.service --no-pager"],
-    ["Service logs", "sudo journalctl -u wfilemanager.service -f"],
-    ["Application health", "curl -fsS http://127.0.0.1:1973/api/health"],
-    ["Reset admin password", "sudo wfilemanager-reset-admin-password"],
-    ["Update application", "sudo systemctl start wfilemanager-updater@install.service"],
-    ["Roll back to previous release", "sudo systemctl start wfilemanager-updater@rollback.service"],
-    ["Uninstall wFileManager", UNINSTALL_CMD],
+  const groups: Array<{
+    label: string;
+    commands: Array<{ label: string; command: string; icon: LucideIcon; destructive?: boolean }>;
+  }> = [
+    {
+      label: "Observe",
+      commands: [
+        {
+          label: "Service status",
+          command: "sudo systemctl status wfilemanager.service --no-pager",
+          icon: Server,
+        },
+        {
+          label: "Service logs",
+          command: "sudo journalctl -u wfilemanager.service -f",
+          icon: FileText,
+        },
+        {
+          label: "Application health",
+          command: "curl -fsS http://127.0.0.1:1973/api/health",
+          icon: HeartPulse,
+        },
+      ],
+    },
+    {
+      label: "Maintain",
+      commands: [
+        {
+          label: "Reset admin password",
+          command: "sudo wfilemanager-reset-admin-password",
+          icon: KeyRound,
+        },
+        {
+          label: "Update application",
+          command: "sudo systemctl start wfilemanager-updater@install.service",
+          icon: RefreshCw,
+        },
+        {
+          label: "Roll back to previous release",
+          command: "sudo systemctl start wfilemanager-updater@rollback.service",
+          icon: RotateCcw,
+        },
+      ],
+    },
+    {
+      label: "Remove",
+      commands: [
+        {
+          label: "Uninstall wFileManager",
+          command: UNINSTALL_CMD,
+          icon: Trash2,
+          destructive: true,
+        },
+      ],
+    },
   ];
   return (
     <section id="admin" className="border-b border-border bg-[var(--surface-1)]/30">
-      <div className="mx-auto max-w-6xl px-4 py-24">
-        <SectionHeader
-          kicker="Administration"
-          title="Everything an operator needs, in the shell"
-          desc="wFileManager ships helper commands and systemd units for status, logs, health, updates, rollback and clean removal."
-        />
-        <div className="mx-auto mt-12 max-w-3xl space-y-3">
-          {cmds.map(([label, cmd]) => (
-            <div key={label} className="card-surface p-4">
-              <div className="mb-2 text-[11px] uppercase tracking-wider text-muted-foreground">
-                {label}
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-24 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-16">
+        <div className="lg:pt-8">
+          <div className="mb-3 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider brand-text">
+            <Activity className="h-3.5 w-3.5" />
+            Administration
+          </div>
+          <h2 className="max-w-lg text-balance text-3xl font-semibold md:text-4xl">
+            Everything an operator needs, in the shell
+          </h2>
+          <p className="mt-4 max-w-lg text-pretty leading-relaxed text-muted-foreground">
+            Inspect the service, verify health, manage releases and remove the application with
+            standard Linux commands.
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-md border border-border bg-background shadow-[var(--shadow-card)]">
+          <div className="flex h-11 items-center justify-between border-b border-border bg-[var(--surface-2)] px-4">
+            <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+              <TerminalIcon className="h-3.5 w-3.5 brand-text" />
+              root@server:~
+            </div>
+            <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--brand)]" />
+              systemd
+            </span>
+          </div>
+          {groups.map((group) => (
+            <div key={group.label} className="border-b border-border last:border-b-0">
+              <div className="border-b border-border/70 bg-[var(--surface-1)] px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {group.label}
               </div>
-              <CodeBlock code={cmd} />
+              <div className="divide-y divide-border/70">
+                {group.commands.map((item) => (
+                  <OperatorCommand key={item.label} {...item} />
+                ))}
+              </div>
             </div>
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function OperatorCommand({
+  label,
+  command,
+  icon: Icon,
+  destructive = false,
+}: {
+  label: string;
+  command: string;
+  icon: LucideIcon;
+  destructive?: boolean;
+}) {
+  const [copied, setCopied] = React.useState(false);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_2.25rem] gap-3 px-4 py-4 sm:grid-cols-[10.5rem_minmax(0,1fr)_2.25rem] sm:items-center">
+      <div
+        className={`flex min-w-0 items-center gap-2 text-xs font-medium ${destructive ? "text-destructive" : "text-foreground"}`}
+      >
+        <Icon className="h-3.5 w-3.5 shrink-0" />
+        <span>{label}</span>
+      </div>
+      <code className="col-span-2 block min-w-0 overflow-x-auto whitespace-nowrap font-mono text-[11px] leading-5 text-muted-foreground sm:col-span-1 sm:text-xs">
+        <span className="brand-text">$ </span>
+        {command}
+      </code>
+      <button
+        type="button"
+        onClick={copy}
+        aria-label={`Copy ${label} command`}
+        title={copied ? "Copied" : `Copy ${label} command`}
+        className="btn-ghost btn-ghost-hover row-start-1 inline-flex h-8 w-8 items-center justify-center rounded-md sm:col-start-3 sm:row-auto"
+      >
+        {copied ? (
+          <Check className="h-3.5 w-3.5 brand-text" />
+        ) : (
+          <Clipboard className="h-3.5 w-3.5" />
+        )}
+      </button>
+    </div>
   );
 }
 

@@ -33,4 +33,13 @@ describe("open source website", () => {
     expect(content).not.toMatch(/Community|Pro plan|Plan Pro|SQLite on your server|heartbeat/i);
     expect(styles.match(/#1A73E8/g)?.length).toBeGreaterThanOrEqual(6);
   });
+
+  test("renders one native operator console without injected commands", async () => {
+    const home = await source("src/routes/index.tsx");
+    const rootRoute = await source("src/routes/__root.tsx");
+
+    expect(home.match(/label: "Uninstall wFileManager"/g)).toHaveLength(1);
+    expect(rootRoute).not.toContain("HomeAdminCommandEnhancer");
+    expect(rootRoute).not.toContain("createPortal");
+  });
 });
