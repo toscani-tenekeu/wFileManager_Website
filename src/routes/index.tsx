@@ -90,7 +90,9 @@ function Hero() {
       <div className="relative mx-auto max-w-6xl px-4 pb-24 pt-20 md:pt-28">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-            A secure, open source web based file manager for Linux servers.
+            The open source file manager
+            <br />
+            <span className="brand-text">for Linux servers.</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
             wFileManager gives your Linux server a modern web file explorer, guarded archives,
