@@ -407,7 +407,7 @@ function Terminal() {
             <Line prompt>curl -fsS http://127.0.0.1:1973/api/health</Line>
             <Line dim>{`{ "status": "ok", "release": "current" }`}</Line>
             <Line prompt>journalctl -u wfilemanager.service -f</Line>
-            <Line dim>info heartbeat sent · 200 OK · 84ms</Line>
+            <Line dim>info health check passed · local database ready</Line>
             <Line dim>info session opened · admin · 10.0.0.4</Line>
             <Line prompt>
               <span className="inline-block h-3.5 w-2 translate-y-0.5 animate-pulse bg-[var(--brand)]" />
@@ -484,7 +484,6 @@ function AdminCommands() {
     ["Service status", "sudo systemctl status wfilemanager.service --no-pager"],
     ["Service logs", "sudo journalctl -u wfilemanager.service -f"],
     ["Application health", "curl -fsS http://127.0.0.1:1973/api/health"],
-    ["Heartbeat status", "sudo systemctl status wfilemanager-heartbeat.timer --no-pager"],
     ["Reset admin password", "sudo wfilemanager-reset-admin-password"],
     ["Update application", "sudo systemctl start wfilemanager-updater@install.service"],
     ["Roll back to previous release", "sudo systemctl start wfilemanager-updater@rollback.service"],

@@ -30,7 +30,9 @@ describe("open source website", () => {
     ]).then((files) => files.join("\n"));
     const styles = await source("src/styles.css");
 
-    expect(content).not.toMatch(/Community|Pro plan|Plan Pro|SQLite on your server/i);
+    expect(content).not.toMatch(
+      /Community|Pro plan|Plan Pro|SQLite on your server|heartbeat/i,
+    );
     expect(styles.match(/#1A73E8/g)?.length).toBeGreaterThanOrEqual(6);
   });
 });
