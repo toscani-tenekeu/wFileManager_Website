@@ -90,9 +90,7 @@ function Hero() {
       <div className="relative mx-auto max-w-6xl px-4 pb-24 pt-20 md:pt-28">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-            The open source file manager
-            <br />
-            <span className="brand-text">for Linux servers.</span>
+            A secure, open source web based file manager for Linux servers.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
             wFileManager gives your Linux server a modern web file explorer, guarded archives,
@@ -141,99 +139,16 @@ function AppPreview() {
           </div>
           <div className="mx-auto flex items-center gap-2 rounded-md bg-background/60 px-3 py-1 text-xs text-muted-foreground">
             <LockIcon className="h-3 w-3 brand-text" />
-            files.your-server.example
+            wFileManager
           </div>
           <div className="w-16" />
         </div>
-        <div className="grid grid-cols-12 gap-0">
-          <aside className="col-span-3 border-r border-border bg-[var(--surface-1)] p-3 text-xs">
-            <div className="mb-2 px-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-              Filesystem
-            </div>
-            {["/", "etc", "home", "opt", "var", "root", "usr"].map((n, i) => (
-              <div
-                key={n}
-                className={`flex items-center gap-2 rounded-md px-2 py-1.5 ${i === 3 ? "bg-[var(--surface-2)] text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-              >
-                <FolderIcon className="h-3.5 w-3.5 brand-text" />
-                {n}
-              </div>
-            ))}
-            <div className="mt-4 border-t border-border pt-3">
-              <div className="mb-2 px-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-                System
-              </div>
-              {[
-                ["Trash", TrashIcon],
-                ["Users", UsersIcon],
-                ["Sessions", KeyIcon],
-                ["Terminal", TerminalIcon],
-              ].map(([label, Ico]) => {
-                const I = Ico as (p: { className?: string }) => React.ReactElement;
-                return (
-                  <div
-                    key={label as string}
-                    className="flex items-center gap-2 rounded-md px-2 py-1.5 text-muted-foreground hover:text-foreground"
-                  >
-                    <I className="h-3.5 w-3.5" />
-                    {label as string}
-                  </div>
-                );
-              })}
-            </div>
-          </aside>
-          <div className="col-span-9 p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="text-foreground">/opt</span> / wfilemanager
-              </div>
-              <div className="flex gap-2">
-                {["Upload", "New", "Archive"].map((b) => (
-                  <span
-                    key={b}
-                    className="rounded-md border border-border px-2 py-1 text-[11px] text-muted-foreground"
-                  >
-                    {b}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="overflow-hidden rounded-md border border-border">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[var(--surface-2)] text-muted-foreground">
-                  <tr>
-                    <th className="px-3 py-2 font-medium">Name</th>
-                    <th className="px-3 py-2 font-medium">Size</th>
-                    <th className="px-3 py-2 font-medium">Owner</th>
-                    <th className="px-3 py-2 font-medium">Modified</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {[
-                    ["releases", "—", "root", "2 min ago", FolderIcon],
-                    ["current", "—", "root", "2 min ago", FolderIcon],
-                    ["config.env", "1.2 KB", "root", "1 h ago", FileIcon],
-                    ["backup-2026-07.tar.gz", "482 MB", "root", "Yesterday", ArchiveIcon],
-                    ["install.sh", "18 KB", "root", "3 days", FileIcon],
-                    ["wfilemanager.db", "6.4 MB", "wfm", "Now", DbIcon],
-                  ].map(([name, size, owner, mod, Ico]) => {
-                    const I = Ico as (p: { className?: string }) => React.ReactElement;
-                    return (
-                      <tr key={name as string} className="hover:bg-[var(--surface-1)]">
-                        <td className="flex items-center gap-2 px-3 py-2">
-                          <I className="h-3.5 w-3.5 brand-text" />
-                          {name as string}
-                        </td>
-                        <td className="px-3 py-2 text-muted-foreground">{size as string}</td>
-                        <td className="px-3 py-2 text-muted-foreground">{owner as string}</td>
-                        <td className="px-3 py-2 text-muted-foreground">{mod as string}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div className="bg-[#090b0d] p-2 sm:p-3">
+          <img
+            src="/screenshots/overview.png"
+            alt="wFileManager server overview"
+            className="h-auto w-full rounded-sm object-contain"
+          />
         </div>
       </div>
     </div>
@@ -940,11 +855,6 @@ function ThemeToggle() {
 
 /* ---------------- SCREENSHOTS ---------------- */
 const SCREENSHOTS: { title: string; desc: string; image?: string }[] = [
-  {
-    image: "/screenshots/overview.png",
-    title: "Server overview",
-    desc: "Filesystem access, transfer limits and server status at a glance.",
-  },
   {
     image: "/screenshots/file-explorer.png",
     title: "File explorer",
