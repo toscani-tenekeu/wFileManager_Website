@@ -863,6 +863,16 @@ const SCREENSHOTS: { title: string; desc: string; image?: string }[] = [
     desc: "Real filesystem browsing with multi‑select, copy, move, rename and delete.",
   },
   {
+    image: "/screenshots/setup-welcome.png",
+    title: "Setup wizard: welcome",
+    desc: "Start a local installation and create the first administrator.",
+  },
+  {
+    image: "/screenshots/setup-administrator.png",
+    title: "Setup wizard: administrator",
+    desc: "Set the display name, username and password for the first administrator.",
+  },
+  {
     image: "/screenshots/root-terminal.png",
     title: "Root PTY terminal",
     desc: "Administrator‑only terminal, gated by current‑password verification.",
@@ -881,16 +891,6 @@ const SCREENSHOTS: { title: string; desc: string; image?: string }[] = [
     image: "/screenshots/notifications.png",
     title: "Notifications",
     desc: "Persistent activity notifications for important account and file events.",
-  },
-  {
-    image: "/screenshots/setup-welcome.png",
-    title: "Setup wizard: welcome",
-    desc: "Start a local installation and create the first administrator.",
-  },
-  {
-    image: "/screenshots/setup-administrator.png",
-    title: "Setup wizard: administrator",
-    desc: "Set the display name, username and password for the first administrator.",
   },
 ];
 
