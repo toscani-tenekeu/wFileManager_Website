@@ -45,7 +45,7 @@ function Nav() {
             Features
           </a>
           <a href="/pricing" className="hover:text-foreground">
-            Pricing
+            Community
           </a>
           <a href={DOCS} className="hover:text-foreground">
             Docs
@@ -287,7 +287,7 @@ function Features() {
     {
       icon: BellIcon,
       title: "Sessions, notifications, presence",
-      desc: "Live session control with notifications and presence, using Community SQLite or Pro managed application data.",
+      desc: "Live session control with notifications and presence, stored locally in SQLite.",
     },
     {
       icon: RefreshIcon,
@@ -334,10 +334,10 @@ function DatabaseModes() {
       <div className="mx-auto max-w-6xl px-4 py-24">
         <SectionHeader
           kicker="Database"
-          title="Choose Community or Pro application data"
-          desc="Community keeps wFileManager records in SQLite on your server. Pro stores those records in managed infrastructure with automatic backups and recovery. Files on your server remain outside both application-data modes."
+          title="Application data stays on your server"
+          desc="wFileManager keeps accounts, roles, sessions, notifications and settings in a local SQLite database."
         />
-        <div className="mt-14 grid gap-6 md:grid-cols-2">
+        <div className="mx-auto mt-14 max-w-3xl">
           <div className="card-surface p-8">
             <div className="flex items-center gap-3">
               <DbIcon className="h-5 w-5 brand-text" />
@@ -354,31 +354,9 @@ function DatabaseModes() {
               <CodeBlock code={"/var/lib/wfilemanager/wfilemanager.db"} />
             </div>
             <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
-              <Bullet>SQLite mode only</Bullet>
-              <Bullet>No paid licence or subscription required</Bullet>
+              <Bullet>No licence, payment or subscription required</Bullet>
               <Bullet>Application records remain on your server</Bullet>
               <Bullet>Self-managed backups and recovery</Bullet>
-            </ul>
-          </div>
-          <div className="card-surface p-8">
-            <div className="flex items-center gap-3">
-              <CloudIcon className="h-5 w-5 brand-text" />
-              <h3 className="text-base font-semibold">Managed application data</h3>
-              <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                Pro
-              </span>
-            </div>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Pro costs $100 USD per instance per year and adds 5 GB of managed remote storage,
-              encrypted folder backups, recovery and operational alerts. Each instance
-              includes 100&nbsp;MB.
-            </p>
-            <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
-              <Bullet>Managed users, roles, sessions, authentication and settings</Bullet>
-              <Bullet>Automatic backups of application records</Bullet>
-              <Bullet>Restore application data after a server reinstall</Bullet>
-              <Bullet>20 GB monthly transfer traffic</Bullet>
-              <Bullet>Additional storage at $1 USD per GB per month</Bullet>
             </ul>
           </div>
         </div>
@@ -402,11 +380,8 @@ function Security() {
       "Entry count, expanded size, ratio and free space are all checked.",
     ],
     ["Verified releases", "Size and SHA‑256 are validated before atomic activation."],
-    [
-      "Hashed recovery secret",
-      "Only a hashed per‑instance secret is stored by the Pro managed backend.",
-    ],
-    ["0600 permissions on secrets", "Recovery key and exported kit are locked to root."],
+    ["Local application data", "Accounts and settings remain in the server SQLite database."],
+    ["0600 permissions on secrets", "Local administrator recovery material is locked to root."],
   ];
   return (
     <section id="security" className="border-b border-border">
@@ -578,34 +553,19 @@ function AdminCommands() {
 function Recovery() {
   return (
     <section className="border-b border-border">
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-24 md:grid-cols-2 md:items-center">
-        <div className="card-surface p-8 font-mono text-xs">
-          <div className="mb-3 flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground">
-            <span>/root/wfilemanager-recovery-kit.txt</span>
-            <span>mode 0600</span>
-          </div>
-          <pre className="whitespace-pre-wrap leading-relaxed text-muted-foreground">
-            {`instance_key : wfm_inst_9f4c2a1e...
-recovery_key : rk_live_7d1b_•••••••••••••
-domain       : files.your-server.example
-created_at   : 2026-07-24T09:41:00Z`}
-          </pre>
-        </div>
-        <div>
+      <div className="mx-auto max-w-4xl px-4 py-24">
+        <div className="mx-auto max-w-2xl">
           <SectionHeader
-            align="left"
-            kicker="Recovery Kit"
-            title="Restore application records after a server reinstall"
-            desc="Pro instances use a root-only Recovery Kit to reconnect a replacement server and restore managed wFileManager users, roles, authentication records, settings and related application data."
+            kicker="Backups"
+            title="Include local application data in your server policy"
+            desc="Back up the SQLite database with your other server state and verify that it can be restored before an incident."
           />
           <div className="mt-6 space-y-3">
-            <CodeBlock code="sudo wfilemanager-recovery-kit show" />
-            <CodeBlock code="sudo wfilemanager-recovery-kit export /root/wfilemanager-recovery-kit.txt" />
+            <CodeBlock code="/var/lib/wfilemanager/wfilemanager.db" />
           </div>
           <div className="mt-6 rounded-lg border border-border bg-[var(--surface-1)] p-4 text-sm text-muted-foreground">
-            <span className="text-foreground">Recovery scope:</span> managed recovery covers
-            wFileManager application records only. Files stored on the server filesystem require a
-            separate server backup and recovery strategy.
+            <span className="text-foreground">Scope:</span> wFileManager application data and server
+            filesystem content are separate. Your backup plan must cover both where required.
           </div>
         </div>
       </div>
