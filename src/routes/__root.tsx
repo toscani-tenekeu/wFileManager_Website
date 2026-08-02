@@ -172,7 +172,7 @@ function SiteNav() {
             Features
           </a>
           <a href="/pricing" className="hover:text-foreground">
-            Pricing
+            Community
           </a>
           <a href={DOCS} className="hover:text-foreground">
             Docs

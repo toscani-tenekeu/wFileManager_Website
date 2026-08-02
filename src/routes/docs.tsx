@@ -12,7 +12,7 @@ const sections = [
     body: [
       "Install wFileManager on a supported Ubuntu server using the official installer, then open /setup to create the first administrator.",
       "The administrator account is an application account. It does not create a Linux user.",
-      "Pro installations require a paid licence key and use managed application data. Keep the Recovery Kit outside the server.",
+      "Application data is stored in /var/lib/wfilemanager/wfilemanager.db. Include it in your server backup policy.",
     ],
   },
   {
@@ -54,18 +54,18 @@ const sections = [
     ],
   },
   {
-    title: "Pro backups",
+    title: "Backups",
     body: [
-      "Pro includes 5 GB of managed storage and 20 GB monthly transfer traffic. Transfer overage is billed marginally: $1/GB through 50 GB, $0.75/GB through 200 GB, then $0.25/GB.",
-      "Select only the server folders you want to protect. wFileManager rejects protected system locations and unsafe links before a backup starts.",
-      "Snapshots are encrypted, verified after upload and retained as 7 daily, 4 weekly and 6 monthly copies. A remote restore always uses a new safe folder.",
+      "Back up /var/lib/wfilemanager/wfilemanager.db with the rest of your server state.",
+      "Test restore procedures before relying on them and keep copies outside the server.",
+      "Server files, websites and databases require their own backup policy.",
     ],
   },
   {
     title: "Updates and recovery",
     body: [
       "Stable updates are downloaded, checked by checksum and size, built in a separate release, health-checked and rolled back automatically if unhealthy.",
-      "Managed Pro instances use a signed heartbeat. The Recovery Kit proves ownership after a server replacement and rotates its key after recovery.",
+      "After a server replacement, restore the local SQLite database from your tested backup.",
       "Never expose the internal Node port. Access wFileManager through HTTPS and Nginx.",
     ],
   },
@@ -76,24 +76,40 @@ function Docs() {
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
         <div className="mx-auto flex h-14 max-w-5xl items-center px-4">
-          <a href="/" className="text-sm font-semibold tracking-tight">wFileManager</a>
+          <a href="/" className="text-sm font-semibold tracking-tight">
+            wFileManager
+          </a>
         </div>
       </header>
       <div className="mx-auto max-w-5xl px-4 py-14">
         <div className="mb-10 max-w-3xl">
-          <div className="mb-3 flex items-center gap-2 text-primary"><BookOpen className="h-5 w-5" />Documentation</div>
+          <div className="mb-3 flex items-center gap-2 text-primary">
+            <BookOpen className="h-5 w-5" />
+            Documentation
+          </div>
           <h1 className="text-4xl font-semibold tracking-tight">Operate wFileManager safely.</h1>
-          <p className="mt-4 text-muted-foreground">Guidance for installation, file management, transfers, administration and recovery.</p>
+          <p className="mt-4 text-muted-foreground">
+            Guidance for installation, file management, transfers, administration and recovery.
+          </p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {sections.map((section, index) => {
-            const Icon = index === 2 ? UploadCloud : index === 5 ? TerminalSquare : index === 4 ? ShieldCheck : BookOpen;
+            const Icon =
+              index === 2
+                ? UploadCloud
+                : index === 5
+                  ? TerminalSquare
+                  : index === 4
+                    ? ShieldCheck
+                    : BookOpen;
             return (
               <section key={section.title} className="rounded-xl border border-border bg-card p-6">
                 <Icon className="mb-4 h-5 w-5 text-primary" />
                 <h2 className="text-lg font-semibold">{section.title}</h2>
                 <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-                  {section.body.map((item) => <li key={item}>{item}</li>)}
+                  {section.body.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
                 </ul>
               </section>
             );

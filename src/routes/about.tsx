@@ -49,8 +49,8 @@ function AboutPage() {
                 description="Privileged operations are protected by application roles, current-password verification, guarded archive handling and hardened filesystem rules."
               />
               <AboutCard
-                title="Community or Pro"
-                description="Use Community with SQLite on your server, or choose Pro managed application data with automatic backups and recovery tools."
+                title="Local by design"
+                description="Application accounts, roles, sessions and settings stay in SQLite on the server you administer."
               />
             </div>
 
@@ -73,8 +73,7 @@ function AboutPage() {
                 </div>
                 <h2 className="mt-3 text-xl font-semibold">One official support mailbox</h2>
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  Installation questions, Pro activation, storage expansion and security reports
-                  should use{" "}
+                  Installation questions, operational issues and security reports should use{" "}
                   <a
                     href={`mailto:${SUPPORT_EMAIL}`}
                     className="font-medium brand-text hover:underline"
