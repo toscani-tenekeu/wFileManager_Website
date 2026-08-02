@@ -883,8 +883,14 @@ const SCREENSHOTS: { title: string; desc: string; image?: string }[] = [
     desc: "Persistent activity notifications for important account and file events.",
   },
   {
-    title: "Setup wizard",
-    desc: "Screenshot coming soon.",
+    image: "/screenshots/setup-welcome.png",
+    title: "Setup wizard: welcome",
+    desc: "Start a local installation and create the first administrator.",
+  },
+  {
+    image: "/screenshots/setup-administrator.png",
+    title: "Setup wizard: administrator",
+    desc: "Set the display name, username and password for the first administrator.",
   },
 ];
 
